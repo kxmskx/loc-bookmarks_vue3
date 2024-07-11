@@ -1,0 +1,16 @@
+///////////
+//
+//  TODO
+//
+///////////
+
+func:
+0. Obrys województw...
+4. Dodać szukanie miejsca czyli update map na link w oknie modalnym.
+5. Dodać funkcjonalnosć do "Wyszukaj na mapie"
+
+obj:
+1. Napis polecane lokalizacje ładnie wyśrodkować
+3. modalne css
+zawijas na rogu polecanych i radius na content
+fixed dla navbar
