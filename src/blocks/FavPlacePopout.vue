@@ -1,12 +1,17 @@
 <template>
   <form @submit.prevent="submitForm" class="p-fluid">
     <div class="p-field">
-      <label for="name">Nazwa miejsca</label>
-      <InputText id="name" v-model="name" />
+      <label for="name" class="input__header">Nazwa miejsca</label>
+      <InputText class="input__input" id="name" v-model="name" />
     </div>
     <div class="p-field">
-      <label for="address">Adres</label>
-      <InputText id="address" v-model="formattedAddress" readonly />
+      <label for="address" class="input__header">Adres</label>
+      <InputText
+        class="input__input"
+        id="address"
+        v-model="formattedAddress"
+        readonly
+      />
     </div>
     <div class="p-field">
       <Button type="submit" label="Zapisz" icon="pi pi-check" />
@@ -57,6 +62,13 @@ export default {
 </script>
 
 <style scoped>
+.input__header {
+  font-size: 15px;
+  width: 100%;
+}
+.input__input {
+  width: 100%;
+}
 .p-field {
   margin-bottom: 20px;
 }

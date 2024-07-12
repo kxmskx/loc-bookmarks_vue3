@@ -10,9 +10,7 @@ import SideBar from "./blocks/SideBar.vue";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 
-import { parse as parseWKT } from "terraformer-wkt-parser";
-
-const GOOGLE_MAPS_API_KEY = "";
+const GOOGLE_MAPS_API_KEY = "AIzaSyBWFrtGpCOH1FuMS4TtzhOdLAqQWiOFR5Q";
 
 export default {
   name: "App",
@@ -35,20 +33,39 @@ export default {
     const mapDiv = ref(null);
     let map = ref(null);
     let clickListener = null;
+    let geoClickListener = null;
+    let moveListener = null;
     const showModal = ref(false);
-    const places = ref([]);
+    const places = ref(JSON.parse(localStorage.getItem("favs") ?? "[]"));
     const address = ref("");
     let geocoder = null;
-
     let marker = null;
-    let geojsonLayer = null;
+    let geojsonObjects = null;
 
     onMounted(async () => {
+      const jsonFile = await fetch("wojewodztwa.json");
+      geojsonObjects = await jsonFile.json();
       await loader.load();
       map.value = new google.maps.Map(mapDiv.value, {
         center: currPos.value,
         zoom: 7,
       });
+      map.value.data.addGeoJson(geojsonObjects);
+      map.value.data.setStyle(function (feature) {
+        var geometryType = feature.getGeometry().getType();
+        if (geometryType === "Polygon" || geometryType === "MultiPolygon") {
+          return {
+            visible: false,
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.35,
+          };
+        }
+        return {};
+      });
+
       geocoder = new google.maps.Geocoder();
       clickListener = map.value.addListener(
         "click",
@@ -57,15 +74,73 @@ export default {
           geocodeLatLng(lat(), lng());
         }
       );
-      addGeoJsonLayer();
+
+      geoClickListener = map.value.data.addListener(
+        "click",
+        ({ latLng: { lat, lng } }) => {
+          otherPos.value = { lat: lat(), lng: lng() };
+          geocodeLatLng(lat(), lng());
+        }
+      );
+
+      moveListener = map.value.addListener("mousemove", (event) => {
+        const point = new google.maps.LatLng(
+          event.latLng.lat(),
+          event.latLng.lng()
+        );
+
+        map.value.data.setStyle(function (feature) {
+          const geometry = feature.getGeometry();
+          const geometryType = geometry.getType();
+          if (geometryType === "Polygon") {
+            return {
+              visible: google.maps.geometry.poly.containsLocation(
+                point,
+                new google.maps.Polygon({ paths: geometry.getAt(0).getArray() })
+              ),
+              strokeColor: "#0000FF",
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: "",
+              fillOpacity: 0.15,
+            };
+          } else if (geometryType === "MultiPolygon") {
+            let contained = false;
+            geometry.getArray().forEach(function (polygon) {
+              if (
+                google.maps.geometry.poly.containsLocation(
+                  point,
+                  new google.maps.Polygon({
+                    paths: polygon.getAt(0).getArray(),
+                  })
+                )
+              ) {
+                contained = true;
+              }
+            });
+            return {
+              visible: contained,
+              strokeColor: "#FF0000",
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: "",
+              fillOpacity: 0.15,
+            };
+          }
+          return {};
+        });
+      });
     });
 
     onUnmounted(async () => {
       if (clickListener) {
         clickListener.remove();
       }
-      if (geojsonLayer) {
-        geojsonLayer.setMap(null);
+      if (geoClickListener) {
+        geoClickListener.remove();
+      }
+      if (moveListener) {
+        moveListener.remove();
       }
     });
 
@@ -108,50 +183,7 @@ export default {
     const addPlace = (place) => {
       places.value.push({ id: places.value.length + 1, ...place });
       showModal.value = false;
-    };
-    //elo
-    // Dodanie warstwy GeoJSON z województwami
-    const addGeoJsonLayer = async () => {
-      try {
-        const response = await fetch("./wojewodztwa-max.geojson");
-        const geojson = await response.json();
-
-        geojsonLayer = new google.maps.Data({ map: map.value });
-        geojsonLayer.addGeoJson(geojson);
-
-        geojsonLayer.setStyle({
-          fillColor: "#FF0000",
-          strokeWeight: 1,
-        });
-
-        geojsonLayer.addListener("click", (event) => {
-          const wktString = event.feature.getProperty("wkt");
-
-          // Parsowanie WKT do GeoJSON za pomocą terraformer-wkt-parser
-          const polygonGeoJSON = parseWKT(wktString);
-
-          const polygonCoords = polygonGeoJSON.coordinates[0].map((coord) => {
-            return { lat: coord[1], lng: coord[0] };
-          });
-
-          const polygon = new google.maps.Polygon({
-            paths: polygonCoords,
-            strokeColor: "#FF0000",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.35,
-          });
-          polygon.setMap(map.value);
-
-          if (marker) {
-            marker.setMap(null);
-          }
-          marker = polygon;
-        });
-      } catch (error) {
-        console.error("Błąd podczas ładowania danych GeoJSON:", error);
-      }
+      localStorage.setItem("favs", JSON.stringify(places));
     };
 
     return {
@@ -196,17 +228,21 @@ export default {
         </div>
         <div class="d-flex button-section">
           <Button
-            class="button"
+            class="button add__button"
             label="Dodaj miejsce do ulubionych"
             icon="pi pi-map-marker"
             @click="showModal = true"
           />
           <Button
-            class="button"
+            class="button search__button"
             label="Wyszukaj na mapie"
             icon="pi pi-search"
           />
-          <Button class="button" label="Użyj linku" icon="pi pi-link" />
+          <Button
+            class="button use__button"
+            label="Użyj linku"
+            icon="pi pi-link"
+          />
         </div>
 
         <Dialog header="Dodaj miejsce" v-model:visible="showModal">
@@ -246,6 +282,14 @@ export default {
   background-color: #fefefe;
   border-color: #4f4f4f;
   min-width: 262px;
+}
+.button.search__button:hover {
+  background-color: #ffe44e;
+  border-color: #ffe44e;
+}
+.button.use__button:hover {
+  background-color: cornflowerblue;
+  border-color: cornflowerblue;
 }
 @media screen and (max-width: 991px) {
   .button-section {

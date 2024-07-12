@@ -23,7 +23,7 @@ export default {
   background-color: #f4f4f4;
   border-left: 1px solid #ddd;
   min-height: 100vh;
-  overflow-y: auto; /* Add this line */
+  overflow-y: auto;
 }
 .parent-element {
   display: flex;
