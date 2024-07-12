@@ -113,7 +113,9 @@ export default {
 }
 
 .recomendations__header {
-  margin-left: 10px;
-  margin-top: 15px;
+  font-size: 22px;
+  margin-left: 0px;
+  margin-bottom: 25px;
+  margin-top: 5px;
 }
 </style>

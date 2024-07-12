@@ -17,11 +17,11 @@ export default {
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: 250px;
+  width: 230px;
   align-items: center;
   padding: 15px;
-  background-color: #f4f4f4;
-  border-left: 1px solid #ddd;
+  background-color: #ffffff;
+  border-left: 1px solid #e9ecef;
   min-height: 100vh;
   overflow-y: auto;
 }

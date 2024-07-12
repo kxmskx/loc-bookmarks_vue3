@@ -1,19 +1,22 @@
 <template>
-  <h4 v-if="places.length > 0" class="header">Twoje miejsca</h4>
-  <h4 v-else class="header">Brak polubionych miejsc.</h4>
-  <div
-    class="places-grid"
-    v-animateonscroll="{
-      enterClass: 'animate-zoomin',
-      leaveClass: 'animate-fadeout',
-    }"
-  >
-    <div v-for="place in places" :key="place.id" class="place-card">
-      <MiniMap :lat="place.lat" :lng="place.lng" />
-      <div class="place-info">
-        <h3>{{ place.name }}</h3>
-        <p>{{ place.address }}</p>
-        <p>Lat: {{ place.lat }}, Lng: {{ place.lng }}</p>
+  <div class="fav__wrapper">
+    <h4 v-if="places.length > 0" class="header">Twoje miejsca</h4>
+    <h4 v-else class="header">Brak polubionych miejsc.</h4>
+    <div
+      class="places-grid"
+      v-animateonscroll="{
+        enterClass: 'animate-zoomin',
+        leaveClass: 'animate-fadeout',
+      }"
+    >
+      <div v-for="place in places" :key="place.id" class="place-card">
+        <MiniMap :lat="place.lat" :lng="place.lng" />
+        <div class="place-info">
+          <h3>{{ place.name }}</h3>
+          <p>{{ place.address }}</p>
+          <p>Lat: {{ place.lat }},</p>
+          <p>Lng: {{ place.lng }}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -37,6 +40,15 @@ export default {
 </script>
 
 <style scoped>
+.fav__wrapper {
+  width: auto;
+  height: auto;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin: 14px;
+  padding: 10px 0px;
+  border-radius: 14px;
+}
 .header {
   text-align: center;
   margin-bottom: 20px;
@@ -70,6 +82,14 @@ export default {
 
 .place-info {
   padding: 10px;
+}
+
+.place-info h3 {
+  font-size: 20px;
+}
+
+.place-info p {
+  font-size: 10px;
 }
 
 .place-info h3 {

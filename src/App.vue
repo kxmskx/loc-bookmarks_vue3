@@ -9,6 +9,7 @@ import FavoritePlacesGrid from "./blocks/FavoritePlacesGrid.vue";
 import SideBar from "./blocks/SideBar.vue";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
+import InputText from "primevue/inputtext";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyBWFrtGpCOH1FuMS4TtzhOdLAqQWiOFR5Q";
 
@@ -21,6 +22,7 @@ export default {
     NavBar,
     FavoritePlacesGrid,
     SideBar,
+    InputText,
   },
   setup() {
     const { coords } = useGeolocation();
@@ -36,8 +38,10 @@ export default {
     let geoClickListener = null;
     let moveListener = null;
     const showModal = ref(false);
-    const places = ref(JSON.parse(localStorage.getItem("favs") ?? "[]"));
+    const showLinkModal = ref(false);
+    const places = ref([]); // ref(JSON.parse(localStorage.getItem("favs") ?? "[]"));
     const address = ref("");
+    const link = ref("");
     let geocoder = null;
     let marker = null;
     let geojsonObjects = null;
@@ -56,11 +60,11 @@ export default {
         if (geometryType === "Polygon" || geometryType === "MultiPolygon") {
           return {
             visible: false,
-            strokeColor: "#FF0000",
+            strokeColor: "#0000FF",
             strokeOpacity: 0.8,
             strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.35,
+            fillColor: "#0000FF",
+            fillOpacity: 0.15,
           };
         }
         return {};
@@ -120,7 +124,7 @@ export default {
             });
             return {
               visible: contained,
-              strokeColor: "#FF0000",
+              strokeColor: "#0000FF",
               strokeOpacity: 0.8,
               strokeWeight: 2,
               fillColor: "",
@@ -180,10 +184,41 @@ export default {
       }
     };
 
+    const openLinkModal = () => {
+      showLinkModal.value = true;
+    };
+
     const addPlace = (place) => {
       places.value.push({ id: places.value.length + 1, ...place });
       showModal.value = false;
-      localStorage.setItem("favs", JSON.stringify(places));
+      // localStorage.setItem("favs", JSON.stringify(places));
+    };
+
+    const handleLinkSubmit = () => {
+      const coords = parseGoogleMapsLink(link.value);
+      if (coords) {
+        otherPos.value = coords;
+        map.value.setCenter(coords);
+        map.value.setZoom(15);
+        if (marker) marker.setMap(null);
+        marker = new google.maps.Marker({
+          position: coords,
+          map: map.value,
+        });
+        geocodeLatLng(coords.lat, coords.lng);
+        showLinkModal.value = false;
+      } else {
+        alert("Niepoprawny link do Google Maps");
+      }
+    };
+
+    const parseGoogleMapsLink = (url) => {
+      const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+      const match = url.match(regex);
+      if (match) {
+        return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+      }
+      return null;
     };
 
     return {
@@ -191,10 +226,14 @@ export default {
       otherPos,
       mapDiv,
       showModal,
+      showLinkModal,
       addPlace,
       places,
       address,
+      link,
       openModal,
+      openLinkModal,
+      handleLinkSubmit,
     };
   },
 };
@@ -208,14 +247,14 @@ export default {
         <div class="d-flex text-center" style="height: 20vh">
           <div class="m-auto">
             <h4>Twoja pozycja</h4>
-            Współrzędne geograficzne: {{ currPos.lat.toFixed(5) }},
-            {{ currPos.lng.toFixed(5) }}.
+            Współrzędne geograficzne: <br />
+            {{ currPos.lat.toFixed(5) }}, {{ currPos.lng.toFixed(5) }}.
           </div>
           <div class="m-auto">
             <h4>Wybrana pozycja</h4>
             <span v-if="otherPos">
-              Współrzędne geograficzne: {{ otherPos.lat.toFixed(5) }},
-              {{ otherPos.lng.toFixed(5) }}.
+              Współrzędne geograficzne: <br />
+              {{ otherPos.lat.toFixed(5) }}, {{ otherPos.lng.toFixed(5) }}.
             </span>
             <span v-else>Naciśnij na mapę, aby wybrać pozycję.</span>
           </div>
@@ -242,6 +281,7 @@ export default {
             class="button use__button"
             label="Użyj linku"
             icon="pi pi-link"
+            @click="openLinkModal"
           />
         </div>
 
@@ -253,6 +293,22 @@ export default {
             :address="address"
           />
         </Dialog>
+        <Dialog
+          header="Użyj linku z Google Maps"
+          v-model:visible="showLinkModal"
+        >
+          <div class="link__modal">
+            <InputText
+              v-model="link"
+              placeholder="Wprowadź link z Google Maps"
+            />
+            <Button
+              class="link__modal--button"
+              label="Zatwierdź"
+              @click="handleLinkSubmit"
+            />
+          </div>
+        </Dialog>
         <!-- <HardcodedPreviewPlaces /> -->
         <FavoritePlacesGrid :places="places" />
       </main>
@@ -263,7 +319,7 @@ export default {
 
 <style scoped>
 .wrapper {
-  background-color: #faf5ff;
+  background-color: #fbf9fe;
 }
 .place {
   margin: 10px 0;
@@ -284,12 +340,14 @@ export default {
   min-width: 262px;
 }
 .button.search__button:hover {
-  background-color: #ffe44e;
-  border-color: #ffe44e;
+  background-color: #fefefe;
+  border-color: #bdb216;
+  color: #bdb216;
 }
 .button.use__button:hover {
-  background-color: cornflowerblue;
-  border-color: cornflowerblue;
+  color: #4d4dff;
+  background-color: #fefefe;
+  border-color: #4d4dff;
 }
 @media screen and (max-width: 991px) {
   .button-section {
@@ -299,10 +357,20 @@ export default {
 }
 .content {
   display: flex;
-  /* justify-content: flex-end; */
-  margin-right: 250px; /* Leave space for the sidebar */
   width: 100%;
   height: 100%;
+  padding-top: 57px;
+}
+.link__modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 400px;
+}
+.link__modal--button {
+  margin-top: 14px;
+  width: 33%;
 }
 .main {
   flex-grow: 2;

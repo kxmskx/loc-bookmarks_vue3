@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">MyPlaces.io</a>
+      <a class="navbar-brand" href="#">ElCarPlaces.io</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -21,10 +21,10 @@
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Forum</a>
+            <a class="nav-link" href="#">Aktualności</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Ciekawe miejsca</a>
+            <a class="nav-link" href="#">Forum</a>
           </li>
           <li class="nav-item">
             <a
@@ -32,7 +32,7 @@
               href="#"
               tabindex="-1"
               aria-disabled="true"
-              >Twoje miejsca</a
+              >Zakładki lokalizacji</a
             >
           </li>
         </ul>
@@ -69,14 +69,17 @@ export default {
   display: flex;
   align-items: center;
   gap: 25px;
-  margin-right: 14px;
+  margin-right: 20px;
 }
 .navbar {
   margin-bottom: 0px;
   border-bottom: 1px solid #e9ecef;
-  background-color: #f4f4f4;
-  /* position: fixed;
-  width: 100%; */
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 @media screen and (max-width: 991px) {
   .activities {

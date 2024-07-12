@@ -6,10 +6,5 @@
 
 func:
 0. Obrys województw... na marker i na hover
-4. Dodać szukanie miejsca czyli update map na link w oknie modalnym.
 5. Dodać funkcjonalnosć do "Wyszukaj na mapie"
-
-obj:
-1. Napis polecane lokalizacje ładnie wyśrodkować
-3. modalne css
-fixed dla navbar
+9. 
