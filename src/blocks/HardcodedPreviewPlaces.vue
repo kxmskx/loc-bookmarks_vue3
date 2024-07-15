@@ -71,7 +71,6 @@ export default {
 .places-grid--hardcoded {
   display: flex;
   flex-direction: column;
-  /* margin-left: 5px; */
   height: 100vh;
   justify-content: center;
 }
@@ -80,7 +79,6 @@ export default {
   max-width: 200px;
   background-color: #f8f9fa;
   border: 1px solid #ccc;
-  /* justify-content: center; */
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -116,6 +114,6 @@ export default {
   font-size: 22px;
   margin-left: 0px;
   margin-bottom: 25px;
-  margin-top: 5px;
+  margin-top: 14px;
 }
 </style>

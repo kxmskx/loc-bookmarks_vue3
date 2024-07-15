@@ -7,14 +7,14 @@
     <div class="p-field">
       <label for="address" class="input__header">Adres</label>
       <InputText
-        class="input__input"
+        class="input__input input__input--address"
         id="address"
         v-model="formattedAddress"
         readonly
       />
     </div>
-    <div class="p-field">
-      <Button type="submit" label="Zapisz" icon="pi pi-check" />
+    <div class="p-field" id="button__square">
+      <Button class="button" type="submit" label="Zapisz" icon="pi pi-check" />
     </div>
   </form>
 </template>
@@ -62,12 +62,24 @@ export default {
 </script>
 
 <style scoped>
+#button__square {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
+.button {
+  margin-top: 5px;
+}
 .input__header {
   font-size: 15px;
   width: 100%;
+  opacity: 60%;
 }
 .input__input {
   width: 100%;
+}
+.input__input--address {
+  opacity: 40%;
 }
 .p-field {
   margin-bottom: 20px;

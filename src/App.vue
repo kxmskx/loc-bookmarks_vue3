@@ -7,6 +7,7 @@ import FavPlacePopout from "./blocks/FavPlacePopout.vue";
 import NavBar from "./blocks/NavBar.vue";
 import FavoritePlacesGrid from "./blocks/FavoritePlacesGrid.vue";
 import SideBar from "./blocks/SideBar.vue";
+import FooterDiv from "./blocks/FooterDiv.vue";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import InputText from "primevue/inputtext";
@@ -22,6 +23,7 @@ export default {
     NavBar,
     FavoritePlacesGrid,
     SideBar,
+    FooterDiv,
     InputText,
   },
   setup() {
@@ -39,97 +41,135 @@ export default {
     let moveListener = null;
     const showModal = ref(false);
     const showLinkModal = ref(false);
-    const places = ref([]); // ref(JSON.parse(localStorage.getItem("favs") ?? "[]"));
+    const places = ref([]); //ref(JSON.parse(localStorage.getItem("favs") ?? "[]"));
     const address = ref("");
     const link = ref("");
     let geocoder = null;
     let marker = null;
     let geojsonObjects = null;
 
+    const styleForSelection = {
+      visible: true,
+      strokeColor: "#0000FF",
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: "#0000FF",
+      fillOpacity: 0.15,
+    };
+    const styleForHighlight = {
+      visible: true,
+      strokeColor: "#FF00FF",
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: "#FF00FF",
+      fillOpacity: 0.15,
+    };
+    const styleForHiding = {
+      visible: false,
+    };
+
     onMounted(async () => {
       const jsonFile = await fetch("wojewodztwa.json");
       geojsonObjects = await jsonFile.json();
       await loader.load();
+
+      const defaultCenter = { lat: 52.0693, lng: 19.4803 };
+
       map.value = new google.maps.Map(mapDiv.value, {
-        center: currPos.value,
+        center: defaultCenter,
         zoom: 7,
       });
       map.value.data.addGeoJson(geojsonObjects);
       map.value.data.setStyle(function (feature) {
         var geometryType = feature.getGeometry().getType();
         if (geometryType === "Polygon" || geometryType === "MultiPolygon") {
-          return {
-            visible: false,
-            strokeColor: "#0000FF",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#0000FF",
-            fillOpacity: 0.15,
-          };
+          return styleForHiding;
         }
         return {};
       });
 
       geocoder = new google.maps.Geocoder();
-      clickListener = map.value.addListener(
-        "click",
-        ({ latLng: { lat, lng } }) => {
-          otherPos.value = { lat: lat(), lng: lng() };
-          geocodeLatLng(lat(), lng());
-        }
-      );
-
-      geoClickListener = map.value.data.addListener(
-        "click",
-        ({ latLng: { lat, lng } }) => {
-          otherPos.value = { lat: lat(), lng: lng() };
-          geocodeLatLng(lat(), lng());
-        }
-      );
-
-      moveListener = map.value.addListener("mousemove", (event) => {
-        const point = new google.maps.LatLng(
-          event.latLng.lat(),
-          event.latLng.lng()
-        );
-
+      clickListener = map.value.addListener("click", ({ latLng }) => {
+        otherPos.value = { lat: latLng.lat(), lng: latLng.lng() };
+        geocodeLatLng(otherPos.value);
         map.value.data.setStyle(function (feature) {
+          var geometryType = feature.getGeometry().getType();
+          if (geometryType === "Polygon" || geometryType === "MultiPolygon") {
+            return styleForHiding;
+          }
+          return {};
+        });
+      });
+
+      geoClickListener = map.value.data.addListener("click", ({ latLng }) => {
+        otherPos.value = { lat: latLng.lat(), lng: latLng.lng() };
+        geocodeLatLng(otherPos.value);
+        map.value.data.setStyle(function (feature) {
+          feature.setProperty("selected", false);
           const geometry = feature.getGeometry();
           const geometryType = geometry.getType();
           if (geometryType === "Polygon") {
-            return {
-              visible: google.maps.geometry.poly.containsLocation(
-                point,
+            if (
+              !google.maps.geometry.poly.containsLocation(
+                latLng,
                 new google.maps.Polygon({ paths: geometry.getAt(0).getArray() })
-              ),
-              strokeColor: "#0000FF",
-              strokeOpacity: 0.8,
-              strokeWeight: 2,
-              fillColor: "",
-              fillOpacity: 0.15,
-            };
+              )
+            )
+              return styleForHiding;
+            feature.setProperty("selected", true);
+            return styleForSelection;
           } else if (geometryType === "MultiPolygon") {
             let contained = false;
             geometry.getArray().forEach(function (polygon) {
               if (
                 google.maps.geometry.poly.containsLocation(
-                  point,
+                  latLng,
                   new google.maps.Polygon({
                     paths: polygon.getAt(0).getArray(),
                   })
                 )
-              ) {
+              )
                 contained = true;
-              }
             });
-            return {
-              visible: contained,
-              strokeColor: "#0000FF",
-              strokeOpacity: 0.8,
-              strokeWeight: 2,
-              fillColor: "",
-              fillOpacity: 0.15,
-            };
+            if (!contained) return styleForHiding;
+            feature.setProperty("selected", true);
+            return styleForSelection;
+          }
+          return {};
+        });
+      });
+
+      moveListener = map.value.addListener("mousemove", ({ latLng }) => {
+        map.value.data.setStyle(function (feature) {
+          if (feature.getProperty("selected") === true)
+            return styleForSelection;
+
+          const geometry = feature.getGeometry();
+          const geometryType = geometry.getType();
+          if (geometryType === "Polygon") {
+            if (
+              google.maps.geometry.poly.containsLocation(
+                latLng,
+                new google.maps.Polygon({ paths: geometry.getAt(0).getArray() })
+              )
+            )
+              return styleForHighlight;
+            return styleForHiding;
+          } else if (geometryType === "MultiPolygon") {
+            let contained = false;
+            geometry.getArray().forEach(function (polygon) {
+              if (
+                google.maps.geometry.poly.containsLocation(
+                  latLng,
+                  new google.maps.Polygon({
+                    paths: polygon.getAt(0).getArray(),
+                  })
+                )
+              )
+                contained = true;
+            });
+            if (contained) return styleForHighlight;
+            return styleForHiding;
           }
           return {};
         });
@@ -158,11 +198,7 @@ export default {
       }
     });
 
-    const geocodeLatLng = (lat, lng) => {
-      const latlng = {
-        lat: parseFloat(lat),
-        lng: parseFloat(lng),
-      };
+    const geocodeLatLng = (latlng) => {
       geocoder.geocode({ location: latlng }, (results, status) => {
         if (status === "OK") {
           if (results[0]) {
@@ -177,10 +213,10 @@ export default {
     };
 
     const openModal = () => {
-      if (otherPos.value) {
-        showModal.value = true;
-      } else {
+      if (!otherPos.value) {
         alert("Proszę wybrać pozycję na mapie");
+      } else {
+        showModal.value = true;
       }
     };
 
@@ -191,7 +227,7 @@ export default {
     const addPlace = (place) => {
       places.value.push({ id: places.value.length + 1, ...place });
       showModal.value = false;
-      // localStorage.setItem("favs", JSON.stringify(places));
+      //localStorage.setItem("favs", JSON.stringify(places));
     };
 
     const handleLinkSubmit = () => {
@@ -314,6 +350,7 @@ export default {
       </main>
       <SideBar />
     </div>
+    <FooterDiv />
   </div>
 </template>
 
@@ -341,13 +378,13 @@ export default {
 }
 .button.search__button:hover {
   background-color: #fefefe;
-  border-color: #bdb216;
-  color: #bdb216;
+  border-color: rgb(106, 208, 157);
+  color: rgb(106, 208, 157);
 }
 .button.use__button:hover {
-  color: #4d4dff;
+  color: rgb(106, 208, 157);
   background-color: #fefefe;
-  border-color: #4d4dff;
+  border-color: rgb(106, 208, 157);
 }
 @media screen and (max-width: 991px) {
   .button-section {
@@ -371,6 +408,7 @@ export default {
 .link__modal--button {
   margin-top: 14px;
   width: 33%;
+  align-self: flex-end;
 }
 .main {
   flex-grow: 2;
