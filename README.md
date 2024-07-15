@@ -1,24 +1,9 @@
-# vue-elcar
+# vue-elcar for Piotrek
 
 ## Project setup
+
 ```
-npm install
+npm install -> npm run serve
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Projekt stworzony przy pomocy Vue 3, PrimeVue oraz kilku metod css, które testowałem wraz z nauką Vue.js.
