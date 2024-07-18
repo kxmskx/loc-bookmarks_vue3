@@ -265,6 +265,10 @@ export default {
       return null;
     };
 
+    const deletePlace = (placeId) => {
+      places.value = places.value.filter((place) => place.id !== placeId);
+    };
+
     return {
       currPos,
       otherPos,
@@ -272,6 +276,7 @@ export default {
       showModal,
       showLinkModal,
       addPlace,
+      deletePlace,
       choosePlace,
       places,
       address,
@@ -355,7 +360,11 @@ export default {
           </div>
         </Dialog>
         <!-- <HardcodedPreviewPlaces /> -->
-        <FavoritePlacesGrid :places="places" @place-choice="choosePlace" />
+        <FavoritePlacesGrid
+          :places="places"
+          @place-choice="choosePlace"
+          @delete-place="deletePlace"
+        />
       </main>
       <SideBar />
     </div>

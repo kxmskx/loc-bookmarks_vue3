@@ -22,6 +22,12 @@
           <p>Lat: {{ place.lat }},</p>
           <p>Lng: {{ place.lng }}</p>
         </div>
+        <!-- <button class="delete-button" @click="$emit('delete-place', place.id)">
+          ⋮
+        </button> -->
+        <button class="delete-button" @click="$emit('delete-place', place.id)">
+          <div class="pi pi-trash" />
+        </button>
       </div>
     </div>
   </div>
@@ -113,5 +119,21 @@ export default {
 .recomendations__header {
   margin-left: 10px;
   margin-top: 14px;
+}
+
+.delete-button {
+  position: absolute;
+  top: 150px;
+  right: 5px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.3s;
+}
+
+.delete-button:hover {
+  color: #000;
 }
 </style>
