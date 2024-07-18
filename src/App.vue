@@ -73,6 +73,10 @@ export default {
       geojsonObjects = await jsonFile.json();
       await loader.load();
 
+      JSON.parse(localStorage.getItem("places") ?? "[]").forEach((place) => {
+        places.value.push(place);
+      });
+
       const defaultCenter = { lat: 52.0693, lng: 19.4803 };
 
       map.value = new google.maps.Map(mapDiv.value, {
@@ -227,7 +231,7 @@ export default {
     const addPlace = (place) => {
       places.value.push({ id: places.value.length + 1, ...place });
       showModal.value = false;
-      //localStorage.setItem("favs", JSON.stringify(places));
+      localStorage.setItem("places", JSON.stringify(places.value));
     };
 
     const handleLinkSubmit = () => {
