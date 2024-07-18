@@ -13,7 +13,7 @@
         v-for="place in places"
         :key="place.id"
         class="place-card"
-        @click="handleChoice(place)"
+        @click="$emit('place-choice', { lat: place.lat, lng: place.lng })"
       >
         <MiniMap :lat="place.lat" :lng="place.lng" />
         <div class="place-info">
@@ -22,10 +22,10 @@
           <p>Lat: {{ place.lat }},</p>
           <p>Lng: {{ place.lng }}</p>
         </div>
-        <!-- <button class="delete-button" @click="$emit('delete-place', place.id)">
-          ⋮
-        </button> -->
-        <button class="delete-button" @click="$emit('delete-place', place.id)">
+        <button
+          class="delete-button"
+          @click.stop.prevent="$emit('delete-place', place.id)"
+        >
           <div class="pi pi-trash" />
         </button>
       </div>
@@ -42,11 +42,6 @@ export default {
     places: {
       type: Array,
       required: true,
-    },
-  },
-  methods: {
-    handleChoice(place) {
-      this.$emit("place-choice", place);
     },
   },
   components: {
@@ -132,7 +127,6 @@ export default {
   color: #aaa;
   transition: color 0.3s;
 }
-
 .delete-button:hover {
   color: #000;
 }

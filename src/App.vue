@@ -13,6 +13,25 @@ import Dialog from "primevue/dialog";
 import InputText from "primevue/inputtext";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyBWFrtGpCOH1FuMS4TtzhOdLAqQWiOFR5Q";
+const styleForSelection = {
+  visible: true,
+  strokeColor: "#0000FF",
+  strokeOpacity: 0.8,
+  strokeWeight: 2,
+  fillColor: "#0000FF",
+  fillOpacity: 0.15,
+};
+const styleForHighlight = {
+  visible: true,
+  strokeColor: "#FF00FF",
+  strokeOpacity: 0.8,
+  strokeWeight: 2,
+  fillColor: "#FF00FF",
+  fillOpacity: 0.15,
+};
+const styleForHiding = {
+  visible: false,
+};
 
 export default {
   name: "App",
@@ -27,171 +46,152 @@ export default {
     InputText,
   },
   setup() {
+    const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY });
     const { coords } = useGeolocation();
+
     const currPos = computed(() => ({
       lat: coords.value.latitude,
       lng: coords.value.longitude,
     }));
     const otherPos = ref(null);
-    const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY });
-    const mapDiv = ref(null);
-    let map = ref(null);
+
+    const mapContainer = ref(null);
+    const map = ref(null);
+
+    const address = ref("");
+    const showModal = ref(false);
+
+    const link = ref("");
+    const showLinkModal = ref(false);
+
+    const places = ref([]);
+
+    let geocoder = null;
+    let marker = null;
     let clickListener = null;
     let geoClickListener = null;
     let moveListener = null;
-    const showModal = ref(false);
-    const showLinkModal = ref(false);
-    const places = ref([]);
-    const address = ref("");
-    const link = ref("");
-    let geocoder = null;
-    let marker = null;
-    let geojsonObjects = null;
 
-    const styleForSelection = {
-      visible: true,
-      strokeColor: "#0000FF",
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: "#0000FF",
-      fillOpacity: 0.15,
-    };
-    const styleForHighlight = {
-      visible: true,
-      strokeColor: "#FF00FF",
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: "#FF00FF",
-      fillOpacity: 0.15,
-    };
-    const styleForHiding = {
-      visible: false,
-    };
-    const checkWojewodztwa = (latLng) => {
-      map.value.data.setStyle(function (feature) {
+    const clearWojewodztwa = () =>
+      map.value.data.setStyle((feature) =>
+        ["Polygon", "MultiPolygon"].includes(feature.getGeometry().getType())
+          ? styleForHiding
+          : {}
+      );
+    const checkWojewodztwa = (latLng) =>
+      map.value.data.setStyle((feature) => {
         feature.setProperty("selected", false);
-        const geometry = feature.getGeometry();
-        const geometryType = geometry.getType();
-        if (geometryType === "Polygon") {
-          if (
-            !google.maps.geometry.poly.containsLocation(
-              latLng,
-              new google.maps.Polygon({ paths: geometry.getAt(0).getArray() })
-            )
-          )
-            return styleForHiding;
-          feature.setProperty("selected", true);
-          return styleForSelection;
-        } else if (geometryType === "MultiPolygon") {
-          let contained = false;
-          geometry.getArray().forEach(function (polygon) {
+        switch (feature.getGeometry().getType()) {
+          case "Polygon": {
             if (
-              google.maps.geometry.poly.containsLocation(
+              !google.maps.geometry.poly.containsLocation(
                 latLng,
                 new google.maps.Polygon({
-                  paths: polygon.getAt(0).getArray(),
+                  paths: feature.getGeometry().getAt(0).getArray(),
                 })
               )
             )
-              contained = true;
-          });
-          if (!contained) return styleForHiding;
-          feature.setProperty("selected", true);
-          return styleForSelection;
-        }
-        return {};
-      });
-    };
+              return styleForHiding;
 
-    onMounted(async () => {
-      const jsonFile = await fetch("wojewodztwa.json");
-      geojsonObjects = await jsonFile.json();
-      await loader.load();
-      JSON.parse(localStorage.getItem("places") ?? "[]").forEach((place) => {
-        places.value.push(place);
-      });
-
-      const defaultCenter = { lat: 52.0693, lng: 19.4803 };
-
-      map.value = new google.maps.Map(mapDiv.value, {
-        center: defaultCenter,
-        zoom: 7,
-      });
-      map.value.data.addGeoJson(geojsonObjects);
-      map.value.data.setStyle(function (feature) {
-        var geometryType = feature.getGeometry().getType();
-        if (geometryType === "Polygon" || geometryType === "MultiPolygon") {
-          return styleForHiding;
-        }
-        return {};
-      });
-
-      geocoder = new google.maps.Geocoder();
-      clickListener = map.value.addListener("click", ({ latLng }) => {
-        otherPos.value = { lat: latLng.lat(), lng: latLng.lng() };
-        geocodeLatLng(otherPos.value);
-        map.value.data.setStyle(function (feature) {
-          var geometryType = feature.getGeometry().getType();
-          if (geometryType === "Polygon" || geometryType === "MultiPolygon") {
-            return styleForHiding;
-          }
-          return {};
-        });
-      });
-
-      geoClickListener = map.value.data.addListener("click", ({ latLng }) => {
-        otherPos.value = { lat: latLng.lat(), lng: latLng.lng() };
-        geocodeLatLng(otherPos.value);
-        checkWojewodztwa(latLng);
-      });
-
-      moveListener = map.value.addListener("mousemove", ({ latLng }) => {
-        map.value.data.setStyle(function (feature) {
-          if (feature.getProperty("selected") === true)
+            feature.setProperty("selected", true);
             return styleForSelection;
-
-          const geometry = feature.getGeometry();
-          const geometryType = geometry.getType();
-          if (geometryType === "Polygon") {
-            if (
-              google.maps.geometry.poly.containsLocation(
-                latLng,
-                new google.maps.Polygon({ paths: geometry.getAt(0).getArray() })
-              )
-            )
-              return styleForHighlight;
-            return styleForHiding;
-          } else if (geometryType === "MultiPolygon") {
+          }
+          case "MultiPolygon": {
             let contained = false;
-            geometry.getArray().forEach(function (polygon) {
-              if (
+            feature
+              .getGeometry()
+              .getArray()
+              .forEach((polygon) =>
                 google.maps.geometry.poly.containsLocation(
                   latLng,
                   new google.maps.Polygon({
                     paths: polygon.getAt(0).getArray(),
                   })
                 )
-              )
-                contained = true;
-            });
-            if (contained) return styleForHighlight;
-            return styleForHiding;
+                  ? (contained = true)
+                  : null
+              );
+            if (!contained) return styleForHiding;
+            feature.setProperty("selected", true);
+            return styleForSelection;
           }
-          return {};
+          default:
+            return {};
+        }
+      });
+
+    onMounted(async () => {
+      await loader.load();
+      map.value = new google.maps.Map(mapContainer.value, {
+        center: { lat: 52.0693, lng: 19.4803 },
+        zoom: 7,
+      });
+      geocoder = new google.maps.Geocoder();
+
+      fetch("wojewodztwa.json").then((jsonFile) => {
+        jsonFile.json().then((geojsonObjects) => {
+          map.value.data.addGeoJson(geojsonObjects);
+          clearWojewodztwa();
         });
       });
+      JSON.parse(localStorage.getItem("places") ?? "[]").forEach((place) => {
+        places.value.push(place);
+      });
+
+      clickListener = map.value.addListener("click", ({ latLng }) => {
+        otherPos.value = { lat: latLng.lat(), lng: latLng.lng() };
+        clearWojewodztwa();
+      });
+
+      geoClickListener = map.value.data.addListener("click", ({ latLng }) => {
+        otherPos.value = { lat: latLng.lat(), lng: latLng.lng() };
+        checkWojewodztwa(latLng);
+      });
+
+      moveListener = map.value.addListener("mousemove", ({ latLng }) =>
+        map.value.data.setStyle((feature) => {
+          if (feature.getProperty("selected") === true)
+            return styleForSelection;
+
+          switch (feature.getGeometry().getType()) {
+            case "Polygon": {
+              return google.maps.geometry.poly.containsLocation(
+                latLng,
+                new google.maps.Polygon({
+                  paths: feature.getGeometry().getAt(0).getArray(),
+                })
+              )
+                ? styleForHighlight
+                : styleForHiding;
+            }
+            case "MultiPolygon": {
+              let contained = false;
+              feature
+                .getGeometry()
+                .getArray()
+                .forEach((polygon) =>
+                  google.maps.geometry.poly.containsLocation(
+                    latLng,
+                    new google.maps.Polygon({
+                      paths: polygon.getAt(0).getArray(),
+                    })
+                  )
+                    ? (contained = true)
+                    : null
+                );
+              return contained ? styleForHighlight : styleForHiding;
+            }
+            default:
+              return {};
+          }
+        })
+      );
     });
 
     onUnmounted(async () => {
-      if (clickListener) {
-        clickListener.remove();
-      }
-      if (geoClickListener) {
-        geoClickListener.remove();
-      }
-      if (moveListener) {
-        moveListener.remove();
-      }
+      if (clickListener) clickListener.remove();
+      if (geoClickListener) geoClickListener.remove();
+      if (moveListener) moveListener.remove();
     });
 
     watch(otherPos, () => {
@@ -201,22 +201,23 @@ export default {
           position: otherPos.value,
           map: map.value,
         });
+        geocoder.geocode({ location: otherPos.value }, (results, status) => {
+          if (status === "OK") {
+            if (results[0]) {
+              address.value = results[0].formatted_address;
+            } else {
+              console.warn("Brak wyników dla podanych współrzędnych.");
+            }
+          } else {
+            console.warn(
+              "Geocoder zatrzymał się ze względu na błąd: " + status
+            );
+          }
+        });
+      } else {
+        marker = null;
       }
     });
-
-    const geocodeLatLng = (latlng) => {
-      geocoder.geocode({ location: latlng }, (results, status) => {
-        if (status === "OK") {
-          if (results[0]) {
-            address.value = results[0].formatted_address;
-          } else {
-            console.warn("Brak wyników dla podanych współrzędnych.");
-          }
-        } else {
-          console.warn("Geocoder zatrzymał się ze względu na błąd: " + status);
-        }
-      });
-    };
 
     const openModal = () => {
       if (!otherPos.value) {
@@ -230,60 +231,57 @@ export default {
       showLinkModal.value = true;
     };
 
-    const addPlace = (place) => {
-      places.value.push({ id: places.value.length + 1, ...place });
-      showModal.value = false;
-      localStorage.setItem("places", JSON.stringify(places.value));
-    };
-
-    const choosePlace = (place) => {
-      otherPos.value = { lat: place.lat, lng: place.lng };
-      geocodeLatLng(place.lat, place.lng);
-      checkWojewodztwa(new google.maps.LatLng(place.lat, place.lng));
-    };
+    //  todo - wpiszesz email i klikniesz zapisz sie to wywali modala 'dziekujemy za zapisanie sie na liste mailingowa'
 
     const handleLinkSubmit = () => {
-      const coords = parseGoogleMapsLink(link.value);
-      if (coords) {
-        otherPos.value = coords;
-        map.value.setCenter(coords);
+      const match = link.value.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (match) {
+        otherPos.value = {
+          lat: parseFloat(match[1]),
+          lng: parseFloat(match[2]),
+        };
+        checkWojewodztwa(
+          new google.maps.LatLng(otherPos.value.lat, otherPos.value.lng)
+        );
+        map.value.setCenter(otherPos.value);
         map.value.setZoom(15);
-        geocodeLatLng(coords.lat, coords.lng);
-        checkWojewodztwa(new google.maps.LatLng(place.lat, place.lng));
         showLinkModal.value = false;
       } else {
         alert("Niepoprawny link do Google Maps");
       }
     };
 
-    const parseGoogleMapsLink = (url) => {
-      const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
-      const match = url.match(regex);
-      if (match) {
-        return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
-      }
-      return null;
+    const addPlace = (place) => {
+      places.value.push({ id: places.value.length + 1, ...place });
+      showModal.value = false;
+      localStorage.setItem("places", JSON.stringify(places.value));
     };
 
-    const deletePlace = (placeId) => {
+    const choosePlace = (latlng) => {
+      otherPos.value = latlng;
+      checkWojewodztwa(new google.maps.LatLng(latlng.lat, latlng.lng));
+    };
+
+    const removePlace = (placeId) => {
       places.value = places.value.filter((place) => place.id !== placeId);
+      localStorage.setItem("places", JSON.stringify(places.value));
     };
 
     return {
       currPos,
       otherPos,
-      mapDiv,
-      showModal,
-      showLinkModal,
-      addPlace,
-      deletePlace,
-      choosePlace,
-      places,
+      mapContainer,
       address,
-      link,
       openModal,
+      showModal,
+      link,
       openLinkModal,
+      showLinkModal,
       handleLinkSubmit,
+      places,
+      addPlace,
+      choosePlace,
+      removePlace,
     };
   },
 };
@@ -311,7 +309,7 @@ export default {
         </div>
         <div class="d-flex">
           <div
-            ref="mapDiv"
+            ref="mapContainer"
             style="width: 100%; height: 62vh; border-radius: 14px; margin: 15px"
           />
         </div>
@@ -363,7 +361,7 @@ export default {
         <FavoritePlacesGrid
           :places="places"
           @place-choice="choosePlace"
-          @delete-place="deletePlace"
+          @place-remove="removePlace"
         />
       </main>
       <SideBar />
