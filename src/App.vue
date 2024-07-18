@@ -41,7 +41,7 @@ export default {
     let moveListener = null;
     const showModal = ref(false);
     const showLinkModal = ref(false);
-    const places = ref([]); //ref(JSON.parse(localStorage.getItem("favs") ?? "[]"));
+    const places = ref([]);
     const address = ref("");
     const link = ref("");
     let geocoder = null;
@@ -67,12 +67,46 @@ export default {
     const styleForHiding = {
       visible: false,
     };
+    const checkWojewodztwa = (latLng) => {
+      map.value.data.setStyle(function (feature) {
+        feature.setProperty("selected", false);
+        const geometry = feature.getGeometry();
+        const geometryType = geometry.getType();
+        if (geometryType === "Polygon") {
+          if (
+            !google.maps.geometry.poly.containsLocation(
+              latLng,
+              new google.maps.Polygon({ paths: geometry.getAt(0).getArray() })
+            )
+          )
+            return styleForHiding;
+          feature.setProperty("selected", true);
+          return styleForSelection;
+        } else if (geometryType === "MultiPolygon") {
+          let contained = false;
+          geometry.getArray().forEach(function (polygon) {
+            if (
+              google.maps.geometry.poly.containsLocation(
+                latLng,
+                new google.maps.Polygon({
+                  paths: polygon.getAt(0).getArray(),
+                })
+              )
+            )
+              contained = true;
+          });
+          if (!contained) return styleForHiding;
+          feature.setProperty("selected", true);
+          return styleForSelection;
+        }
+        return {};
+      });
+    };
 
     onMounted(async () => {
       const jsonFile = await fetch("wojewodztwa.json");
       geojsonObjects = await jsonFile.json();
       await loader.load();
-
       JSON.parse(localStorage.getItem("places") ?? "[]").forEach((place) => {
         places.value.push(place);
       });
@@ -108,39 +142,7 @@ export default {
       geoClickListener = map.value.data.addListener("click", ({ latLng }) => {
         otherPos.value = { lat: latLng.lat(), lng: latLng.lng() };
         geocodeLatLng(otherPos.value);
-        map.value.data.setStyle(function (feature) {
-          feature.setProperty("selected", false);
-          const geometry = feature.getGeometry();
-          const geometryType = geometry.getType();
-          if (geometryType === "Polygon") {
-            if (
-              !google.maps.geometry.poly.containsLocation(
-                latLng,
-                new google.maps.Polygon({ paths: geometry.getAt(0).getArray() })
-              )
-            )
-              return styleForHiding;
-            feature.setProperty("selected", true);
-            return styleForSelection;
-          } else if (geometryType === "MultiPolygon") {
-            let contained = false;
-            geometry.getArray().forEach(function (polygon) {
-              if (
-                google.maps.geometry.poly.containsLocation(
-                  latLng,
-                  new google.maps.Polygon({
-                    paths: polygon.getAt(0).getArray(),
-                  })
-                )
-              )
-                contained = true;
-            });
-            if (!contained) return styleForHiding;
-            feature.setProperty("selected", true);
-            return styleForSelection;
-          }
-          return {};
-        });
+        checkWojewodztwa(latLng);
       });
 
       moveListener = map.value.addListener("mousemove", ({ latLng }) => {
@@ -234,18 +236,20 @@ export default {
       localStorage.setItem("places", JSON.stringify(places.value));
     };
 
+    const choosePlace = (place) => {
+      otherPos.value = { lat: place.lat, lng: place.lng };
+      geocodeLatLng(place.lat, place.lng);
+      checkWojewodztwa(new google.maps.LatLng(place.lat, place.lng));
+    };
+
     const handleLinkSubmit = () => {
       const coords = parseGoogleMapsLink(link.value);
       if (coords) {
         otherPos.value = coords;
         map.value.setCenter(coords);
         map.value.setZoom(15);
-        if (marker) marker.setMap(null);
-        marker = new google.maps.Marker({
-          position: coords,
-          map: map.value,
-        });
         geocodeLatLng(coords.lat, coords.lng);
+        checkWojewodztwa(new google.maps.LatLng(place.lat, place.lng));
         showLinkModal.value = false;
       } else {
         alert("Niepoprawny link do Google Maps");
@@ -268,6 +272,7 @@ export default {
       showModal,
       showLinkModal,
       addPlace,
+      choosePlace,
       places,
       address,
       link,
@@ -350,7 +355,7 @@ export default {
           </div>
         </Dialog>
         <!-- <HardcodedPreviewPlaces /> -->
-        <FavoritePlacesGrid :places="places" />
+        <FavoritePlacesGrid :places="places" @place-choice="choosePlace" />
       </main>
       <SideBar />
     </div>

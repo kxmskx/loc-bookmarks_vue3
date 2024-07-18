@@ -9,7 +9,12 @@
         leaveClass: 'animate-fadeout',
       }"
     >
-      <div v-for="place in places" :key="place.id" class="place-card">
+      <div
+        v-for="place in places"
+        :key="place.id"
+        class="place-card"
+        @click="handleChoice(place)"
+      >
         <MiniMap :lat="place.lat" :lng="place.lng" />
         <div class="place-info">
           <h3>{{ place.name }}</h3>
@@ -31,6 +36,11 @@ export default {
     places: {
       type: Array,
       required: true,
+    },
+  },
+  methods: {
+    handleChoice(place) {
+      this.$emit("place-choice", place);
     },
   },
   components: {

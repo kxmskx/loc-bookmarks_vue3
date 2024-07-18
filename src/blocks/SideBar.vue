@@ -24,6 +24,22 @@ export default {
   border-left: 1px solid #e9ecef;
   min-height: 100vh;
   overflow-y: auto;
+
+  /* scrollbar na Chrome */
+  scrollbar-width: none;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  /* scrollbar na firefoxie */
+  scrollbar-width: thin;
+  ::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+  }
+  /* scrollbar na Safari */
+  /* ::-webkit-scrollbar-track {
+    background-color: #ffffff00;
+  } */
 }
 .parent-element {
   display: flex;
