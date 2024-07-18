@@ -3,13 +3,13 @@ import HardcodedPreviewPlaces from "./HardcodedPreviewPlaces.vue";
 export default {
   name: "SideBar",
   components: {
-    HardcodedPreviewPlaces
+    HardcodedPreviewPlaces,
   },
   methods: {
     choosePlace(place) {
-      this.$emit('place-choice', place)
-    }
-  }
+      this.$emit("place-choice", place);
+    },
+  },
 };
 </script>
 

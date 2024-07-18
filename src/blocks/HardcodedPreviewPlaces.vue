@@ -5,6 +5,7 @@ import misImg from '@/img/mis.jpg';
 import killiImg from '@/img/killi.jpg';
 export default {
   name: "HardcodedFavoritePlacesGrid",
+  emits: ['place-choice'],
   setup() {
     const hardcodedPlaces = [
       {

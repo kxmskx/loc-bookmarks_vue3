@@ -9,6 +9,7 @@ export default {
       required: true
     }
   },
+  emits: ['place-choice', 'place-remove'],
   components: {
     MiniMap
   }
@@ -34,7 +35,7 @@ export default {
           <p>Lat: {{ place.lat }},</p>
           <p>Lng: {{ place.lng }}</p>
         </div>
-        <button class="delete-button" @click.stop.prevent="$emit('delete-place', place.id)">
+        <button class="delete-button" @click.stop.prevent="$emit('place-remove', place.id)">
           <div class="pi pi-trash" />
         </button>
       </div>
