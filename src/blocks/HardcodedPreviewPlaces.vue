@@ -1,71 +1,63 @@
+<script>
+import zamczyskoImg from '@/img/zamczysko.jpg';
+import moloImg from '@/img/molo.jpg';
+import misImg from '@/img/mis.jpg';
+import killiImg from '@/img/killi.jpg';
+export default {
+  name: "HardcodedFavoritePlacesGrid",
+  setup() {
+    const hardcodedPlaces = [
+      {
+        name: "Zamek królewski w Warszawie",
+        address: "Plac Zamkowy 4, Warszawa",
+        lat: 52.247,
+        lng: 21.014,
+        picture: zamczyskoImg
+      },
+      {
+        name: "Molo w Sopocie",
+        address: "Plac Zamkowy 4, Warszawa",
+        lat: 52.247,
+        lng: 21.014,
+        picture: moloImg
+      },
+      {
+        name: "Miś na Krupówkach w Zakopanem",
+        address: "Plac Zamkowy 4, Warszawa",
+        lat: 52.247,
+        lng: 21.014,
+        picture: misImg
+      },
+      {
+        name: "Góra Killimanjaro",
+        address: "Plac Zamkowy 4, Warszawa",
+        lat: 52.247,
+        lng: 21.014,
+        picture: killiImg
+      }
+    ];
+    return { hardcodedPlaces };
+  }
+};
+</script>
+
 <template>
   <h3 class="recomendations__header">Polecane lokalizacje</h3>
   <div class="places-grid--hardcoded">
-    <div class="place-card">
+    <div v-for="place in hardcodedPlaces" :key="place.name" class="place-card" @click="$emit('place-choice', {lat: place.lat, lng: place.lng})">
       <img
-        src="../img/zamczysko.jpg"
-        alt="Zdjęcie zamku Królewskiego w Warszawie"
+        :src="place.picture"
+        alt="Zdjęcie"
         class="place-image"
       />
       <div class="place-info">
-        <h3>Zamek królewski w Warszawie</h3>
-        <p>Plac Zamkowy 4, Warszawa</p>
-        <!-- <p>Lat: 52.247, Lng: 21.014</p> -->
-      </div>
-    </div>
-
-    <div class="place-card">
-      <img
-        src="../img/molo.jpg"
-        alt="Zdjęcie molo w sopocie"
-        class="place-image"
-      />
-      <div class="place-info">
-        <h3>Molo w Sopocie</h3>
-        <p>Plac Zamkowy 4, Warszawa</p>
-        <!-- <p>Lat: 52.247, Lng: 21.014</p> -->
-      </div>
-    </div>
-
-    <div class="place-card">
-      <img
-        src="../img/mis.jpg"
-        alt="Zdjęcie misia na Krupówkach"
-        class="place-image"
-      />
-      <div class="place-info">
-        <h3>Miś na Krupówkach</h3>
-        <p>Plac Zamkowy 4, Warszawa</p>
-        <!-- <p>Lat: 52.247, Lng: 21.014</p> -->
-      </div>
-    </div>
-
-    <div class="place-card">
-      <img
-        src="../img/killi.jpg"
-        alt="Zdjęcie Kilimandzaro"
-        class="place-image"
-      />
-      <div class="place-info">
-        <h3>Góra Killimanjaro</h3>
-        <p>Tanzania</p>
-        <!-- <p>Lat: 52.247, Lng: 21.014</p> -->
+        <h3>{{ place.name }}</h3>
+        <p>{{ place.address }}</p>
+        <p>Lat: {{ place.lat }}, Lng: {{ place.lng }}</p>
       </div>
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "FavoritePlacesGrid",
-  props: {
-    places: {
-      type: Array,
-      required: true,
-    },
-  },
-};
-</script>
 
 <style scoped>
 .places-grid--hardcoded {

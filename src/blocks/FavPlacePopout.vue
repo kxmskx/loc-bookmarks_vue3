@@ -1,24 +1,3 @@
-<template>
-  <form @submit.prevent="submitForm" class="p-fluid">
-    <div class="p-field">
-      <label for="name" class="input__header">Nazwa miejsca</label>
-      <InputText class="input__input" id="name" v-model="name" />
-    </div>
-    <div class="p-field">
-      <label for="address" class="input__header">Adres</label>
-      <InputText
-        class="input__input input__input--address"
-        id="address"
-        v-model="formattedAddress"
-        readonly
-      />
-    </div>
-    <div class="p-field" id="button__square">
-      <Button class="button" type="submit" label="Zapisz" icon="pi pi-check" />
-    </div>
-  </form>
-</template>
-
 <script>
 import { ref, watch } from "vue";
 import InputText from "primevue/inputtext";
@@ -26,6 +5,7 @@ import Button from "primevue/button";
 import "primeicons/primeicons.css";
 
 export default {
+  name: "FavPlacePopout",
   components: {
     InputText,
     Button,
@@ -60,6 +40,27 @@ export default {
   },
 };
 </script>
+
+<template>
+  <form @submit.prevent="submitForm" class="p-fluid">
+    <div class="p-field">
+      <label for="name" class="input__header">Nazwa miejsca</label>
+      <InputText class="input__input" id="name" v-model="name" />
+    </div>
+    <div class="p-field">
+      <label for="address" class="input__header">Adres</label>
+      <InputText
+        class="input__input input__input--address"
+        id="address"
+        v-model="formattedAddress"
+        readonly
+      />
+    </div>
+    <div class="p-field" id="button__square">
+      <Button class="button" type="submit" label="Zapisz" icon="pi pi-check" />
+    </div>
+  </form>
+</template>
 
 <style scoped>
 #button__square {

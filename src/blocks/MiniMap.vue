@@ -1,7 +1,3 @@
-<template>
-  <div ref="miniMap" class="mini-map"></div>
-</template>
-
 <script>
 export default {
   name: "MiniMap",
@@ -31,6 +27,10 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div ref="miniMap" class="mini-map"></div>
+</template>
 
 <style scoped>
 .mini-map {

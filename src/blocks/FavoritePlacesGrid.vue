@@ -1,3 +1,20 @@
+
+<script>
+import MiniMap from "./MiniMap.vue";
+export default {
+  name: "FavoritePlacesGrid",
+  props: {
+    places: {
+      type: Array,
+      required: true
+    }
+  },
+  components: {
+    MiniMap
+  }
+};
+</script>
+
 <template>
   <div class="fav__wrapper">
     <h4 v-if="places.length > 0" class="header">Twoje miejsca</h4>
@@ -9,12 +26,7 @@
         leaveClass: 'animate-fadeout',
       }"
     >
-      <div
-        v-for="place in places"
-        :key="place.id"
-        class="place-card"
-        @click="$emit('place-choice', { lat: place.lat, lng: place.lng })"
-      >
+      <div v-for="place in places" :key="place.id" class="place-card" @click="$emit('place-choice', {lat: place.lat, lng: place.lng})">
         <MiniMap :lat="place.lat" :lng="place.lng" />
         <div class="place-info">
           <h3>{{ place.name }}</h3>
@@ -22,33 +34,13 @@
           <p>Lat: {{ place.lat }},</p>
           <p>Lng: {{ place.lng }}</p>
         </div>
-        <button
-          class="delete-button"
-          @click.stop.prevent="$emit('delete-place', place.id)"
-        >
+        <button class="delete-button" @click.stop.prevent="$emit('delete-place', place.id)">
           <div class="pi pi-trash" />
         </button>
       </div>
     </div>
   </div>
 </template>
-
-<script>
-import MiniMap from "./MiniMap.vue";
-
-export default {
-  name: "FavoritePlacesGrid",
-  props: {
-    places: {
-      type: Array,
-      required: true,
-    },
-  },
-  components: {
-    MiniMap,
-  },
-};
-</script>
 
 <style scoped>
 .fav__wrapper {

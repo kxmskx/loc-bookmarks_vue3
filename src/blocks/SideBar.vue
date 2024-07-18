@@ -1,17 +1,23 @@
-<template>
-  <aside class="sidebar">
-    <HardcodedPreviewPlaces />
-  </aside>
-</template>
 <script>
 import HardcodedPreviewPlaces from "./HardcodedPreviewPlaces.vue";
-
 export default {
+  name: "SideBar",
   components: {
-    HardcodedPreviewPlaces,
+    HardcodedPreviewPlaces
   },
+  methods: {
+    choosePlace(place) {
+      this.$emit('place-choice', place)
+    }
+  }
 };
 </script>
+
+<template>
+  <aside class="sidebar">
+    <HardcodedPreviewPlaces @place-choice="choosePlace" />
+  </aside>
+</template>
 
 <style scoped>
 .sidebar {
@@ -24,22 +30,6 @@ export default {
   border-left: 1px solid #e9ecef;
   min-height: 100vh;
   overflow-y: auto;
-
-  /* scrollbar na Chrome */
-  scrollbar-width: none;
-  ::-webkit-scrollbar {
-    display: none;
-  }
-  /* scrollbar na firefoxie */
-  scrollbar-width: thin;
-  ::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
-  }
-  /* scrollbar na Safari */
-  /* ::-webkit-scrollbar-track {
-    background-color: #ffffff00;
-  } */
 }
 .parent-element {
   display: flex;

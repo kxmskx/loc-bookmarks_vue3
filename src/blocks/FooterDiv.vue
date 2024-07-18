@@ -1,11 +1,10 @@
 <script>
 import Button from "primevue/button";
-
 export default {
-  name: "App",
+  name: "FooterDiv",
   components: {
-    Button,
-  },
+    Button
+  }
 };
 </script>
 

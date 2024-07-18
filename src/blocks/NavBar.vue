@@ -1,3 +1,9 @@
+<script>
+export default {
+  name: "NavBar"
+};
+</script>
+
 <template>
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
@@ -53,12 +59,6 @@
     </div>
   </nav>
 </template>
-
-<script>
-export default {
-  name: "NavBar",
-};
-</script>
 
 <style scoped>
 .main__logo-color {
