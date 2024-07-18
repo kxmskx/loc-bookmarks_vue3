@@ -3,8 +3,8 @@ import Button from "primevue/button";
 export default {
   name: "FooterDiv",
   components: {
-    Button
-  }
+    Button,
+  },
 };
 </script>
 

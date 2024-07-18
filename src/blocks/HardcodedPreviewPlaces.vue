@@ -1,11 +1,11 @@
 <script>
-import zamczyskoImg from '@/img/zamczysko.jpg';
-import moloImg from '@/img/molo.jpg';
-import misImg from '@/img/mis.jpg';
-import killiImg from '@/img/killi.jpg';
+import zamczyskoImg from "@/img/zamczysko.jpg";
+import moloImg from "@/img/molo.jpg";
+import misImg from "@/img/mis.jpg";
+import killiImg from "@/img/killi.jpg";
 export default {
   name: "HardcodedFavoritePlacesGrid",
-  emits: ['place-choice'],
+  emits: ["place-choice"],
   setup() {
     const hardcodedPlaces = [
       {
@@ -13,44 +13,45 @@ export default {
         address: "Plac Zamkowy 4, Warszawa",
         lat: 52.247,
         lng: 21.014,
-        picture: zamczyskoImg
+        picture: zamczyskoImg,
       },
       {
-        name: "Molo w Sopocie",
+        name: "Molo w Sopocie, Gate 1",
         address: "Plac Zamkowy 4, Warszawa",
-        lat: 52.247,
-        lng: 21.014,
-        picture: moloImg
+        lat: 54.446,
+        lng: 18.569,
+        picture: moloImg,
       },
       {
         name: "Miś na Krupówkach w Zakopanem",
         address: "Plac Zamkowy 4, Warszawa",
-        lat: 52.247,
-        lng: 21.014,
-        picture: misImg
+        lat: 49.293,
+        lng: 19.951,
+        picture: misImg,
       },
       {
-        name: "Góra Killimanjaro",
+        name: "Góra Killimanjaro w Tanzanii",
         address: "Plac Zamkowy 4, Warszawa",
-        lat: 52.247,
-        lng: 21.014,
-        picture: killiImg
-      }
+        lat: -3.067,
+        lng: 37.355,
+        picture: killiImg,
+      },
     ];
     return { hardcodedPlaces };
-  }
+  },
 };
 </script>
 
 <template>
   <h3 class="recomendations__header">Polecane lokalizacje</h3>
   <div class="places-grid--hardcoded">
-    <div v-for="place in hardcodedPlaces" :key="place.name" class="place-card" @click="$emit('place-choice', {lat: place.lat, lng: place.lng})">
-      <img
-        :src="place.picture"
-        alt="Zdjęcie"
-        class="place-image"
-      />
+    <div
+      v-for="place in hardcodedPlaces"
+      :key="place.name"
+      class="place-card"
+      @click="$emit('place-choice', { lat: place.lat, lng: place.lng })"
+    >
+      <img :src="place.picture" alt="Zdjęcie" class="place-image" />
       <div class="place-info">
         <h3>{{ place.name }}</h3>
         <p>{{ place.address }}</p>
@@ -62,6 +63,7 @@ export default {
 
 <style scoped>
 .places-grid--hardcoded {
+  margin-top: 70px;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -69,6 +71,7 @@ export default {
 }
 
 .place-card {
+  min-height: 220px;
   max-width: 200px;
   background-color: #f8f9fa;
   border: 1px solid #ccc;

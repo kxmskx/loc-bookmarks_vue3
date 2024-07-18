@@ -1,4 +1,3 @@
-
 <script>
 import MiniMap from "./MiniMap.vue";
 export default {
@@ -6,13 +5,13 @@ export default {
   props: {
     places: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
-  emits: ['place-choice', 'place-remove'],
+  emits: ["place-choice", "place-remove"],
   components: {
-    MiniMap
-  }
+    MiniMap,
+  },
 };
 </script>
 
@@ -27,7 +26,12 @@ export default {
         leaveClass: 'animate-fadeout',
       }"
     >
-      <div v-for="place in places" :key="place.id" class="place-card" @click="$emit('place-choice', {lat: place.lat, lng: place.lng})">
+      <div
+        v-for="place in places"
+        :key="place.id"
+        class="place-card"
+        @click="$emit('place-choice', { lat: place.lat, lng: place.lng })"
+      >
         <MiniMap :lat="place.lat" :lng="place.lng" />
         <div class="place-info">
           <h3>{{ place.name }}</h3>
@@ -35,7 +39,10 @@ export default {
           <p>Lat: {{ place.lat }},</p>
           <p>Lng: {{ place.lng }}</p>
         </div>
-        <button class="delete-button" @click.stop.prevent="$emit('place-remove', place.id)">
+        <button
+          class="delete-button"
+          @click.stop.prevent="$emit('place-remove', place.id)"
+        >
           <div class="pi pi-trash" />
         </button>
       </div>
@@ -50,6 +57,7 @@ export default {
   background-color: #fff;
   border: 1px solid #ddd;
   margin: 14px;
+  margin-bottom: 94px;
   padding: 10px 0px;
   border-radius: 14px;
 }

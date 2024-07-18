@@ -72,45 +72,70 @@ export default {
     let geoClickListener = null;
     let moveListener = null;
 
-    const clearWojewodztwa = () => map.value.data.setStyle((feature) => {
-      feature.setProperty("selected", false);
-      return ["Polygon", "MultiPolygon"].includes(feature.getGeometry().getType()) ? styleForHiding : {}
-    });
-    const checkWojewodztwa = (latLng) => map.value.data.setStyle((feature) => {
-      feature.setProperty("selected", false);
-      switch(feature.getGeometry().getType())
-      {
-        case "Polygon": {
-          if(!google.maps.geometry.poly.containsLocation(latLng,
-            new google.maps.Polygon({ paths: feature.getGeometry().getAt(0).getArray() })))
-            return styleForHiding;
+    const clearWojewodztwa = () =>
+      map.value.data.setStyle((feature) => {
+        feature.setProperty("selected", false);
+        return ["Polygon", "MultiPolygon"].includes(
+          feature.getGeometry().getType()
+        )
+          ? styleForHiding
+          : {};
+      });
+    const checkWojewodztwa = (latLng) =>
+      map.value.data.setStyle((feature) => {
+        feature.setProperty("selected", false);
+        switch (feature.getGeometry().getType()) {
+          case "Polygon": {
+            if (
+              !google.maps.geometry.poly.containsLocation(
+                latLng,
+                new google.maps.Polygon({
+                  paths: feature.getGeometry().getAt(0).getArray(),
+                })
+              )
+            )
+              return styleForHiding;
 
-          feature.setProperty("selected", true);
-          return styleForSelection;
-        }
-        case "MultiPolygon": {
-          let contained = false;
-          feature.getGeometry().getArray().forEach((polygon) => (google.maps.geometry.poly.containsLocation(latLng,
-            new google.maps.Polygon({ paths: polygon.getAt(0).getArray() })) ? contained = true : null));
+            feature.setProperty("selected", true);
+            return styleForSelection;
+          }
+          case "MultiPolygon": {
+            let contained = false;
+            feature
+              .getGeometry()
+              .getArray()
+              .forEach((polygon) =>
+                google.maps.geometry.poly.containsLocation(
+                  latLng,
+                  new google.maps.Polygon({
+                    paths: polygon.getAt(0).getArray(),
+                  })
+                )
+                  ? (contained = true)
+                  : null
+              );
             if (!contained) return styleForHiding;
             feature.setProperty("selected", true);
             return styleForSelection;
+          }
+          default:
+            return {};
         }
-        default:
-          return {}
-      }
-    });
+      });
 
     onMounted(async () => {
       await loader.load();
-      map.value = new google.maps.Map(mapContainer.value, { center: { lat: 52.0693, lng: 19.4803 }, zoom: 7 });
+      map.value = new google.maps.Map(mapContainer.value, {
+        center: { lat: 52.0693, lng: 19.4803 },
+        zoom: 7,
+      });
       map.value.data.loadGeoJson("wojewodztwa.json", null, () => {
         clearWojewodztwa();
       });
       geocoder = new google.maps.Geocoder();
       JSON.parse(localStorage.getItem("places") ?? "[]").forEach((place) => {
         places.value.push(place);
-      })
+      });
 
       clickListener = map.value.addListener("click", ({ latLng }) => {
         otherPos.value = { lat: latLng.lat(), lng: latLng.lng() };
@@ -122,26 +147,44 @@ export default {
         checkWojewodztwa(latLng);
       });
 
-      moveListener = map.value.addListener("mousemove", ({ latLng }) => map.value.data.setStyle((feature) => {
-        if (feature.getProperty("selected") === true)
-          return styleForSelection;
+      moveListener = map.value.addListener("mousemove", ({ latLng }) =>
+        map.value.data.setStyle((feature) => {
+          if (feature.getProperty("selected") === true)
+            return styleForSelection;
 
-        switch(feature.getGeometry().getType())
-        {
-          case "Polygon": {
-            return google.maps.geometry.poly.containsLocation(latLng,
-              new google.maps.Polygon({ paths: feature.getGeometry().getAt(0).getArray() })) ? styleForHighlight : styleForHiding;
+          switch (feature.getGeometry().getType()) {
+            case "Polygon": {
+              return google.maps.geometry.poly.containsLocation(
+                latLng,
+                new google.maps.Polygon({
+                  paths: feature.getGeometry().getAt(0).getArray(),
+                })
+              )
+                ? styleForHighlight
+                : styleForHiding;
+            }
+            case "MultiPolygon": {
+              let contained = false;
+              feature
+                .getGeometry()
+                .getArray()
+                .forEach((polygon) =>
+                  google.maps.geometry.poly.containsLocation(
+                    latLng,
+                    new google.maps.Polygon({
+                      paths: polygon.getAt(0).getArray(),
+                    })
+                  )
+                    ? (contained = true)
+                    : null
+                );
+              return contained ? styleForHighlight : styleForHiding;
+            }
+            default:
+              return {};
           }
-          case "MultiPolygon": {
-            let contained = false;
-            feature.getGeometry().getArray().forEach((polygon) => (google.maps.geometry.poly.containsLocation(latLng,
-              new google.maps.Polygon({ paths: polygon.getAt(0).getArray() })) ? contained = true : null));
-            return contained ? styleForHighlight : styleForHiding;
-          }
-          default:
-            return {}
-        }
-      }));
+        })
+      );
     });
 
     onUnmounted(async () => {
@@ -165,7 +208,9 @@ export default {
               console.warn("Brak wyników dla podanych współrzędnych.");
             }
           } else {
-            console.warn("Geocoder zatrzymał się ze względu na błąd: " + status);
+            console.warn(
+              "Geocoder zatrzymał się ze względu na błąd: " + status
+            );
           }
         });
       } else {
@@ -187,9 +232,14 @@ export default {
 
     const handleLinkSubmit = () => {
       const match = link.value.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-      if(match) {
-        otherPos.value = { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
-        checkWojewodztwa(new google.maps.LatLng(otherPos.value.lat, otherPos.value.lng));
+      if (match) {
+        otherPos.value = {
+          lat: parseFloat(match[1]),
+          lng: parseFloat(match[2]),
+        };
+        checkWojewodztwa(
+          new google.maps.LatLng(otherPos.value.lat, otherPos.value.lng)
+        );
         map.value.setCenter(otherPos.value);
         map.value.setZoom(15);
         showLinkModal.value = false;
@@ -210,9 +260,9 @@ export default {
     };
 
     const removePlace = (placeId) => {
-      places.value = places.value.filter(place => place.id !== placeId);
+      places.value = places.value.filter((place) => place.id !== placeId);
       localStorage.setItem("places", JSON.stringify(places.value));
-    }
+    };
 
     return {
       currPos,
@@ -305,7 +355,11 @@ export default {
           </div>
         </Dialog>
         <!-- <HardcodedPreviewPlaces /> -->
-        <FavoritePlacesGrid :places="places" @place-choice="choosePlace" @place-remove="removePlace" />
+        <FavoritePlacesGrid
+          :places="places"
+          @place-choice="choosePlace"
+          @place-remove="removePlace"
+        />
       </main>
       <SideBar @place-choice="choosePlace" />
     </div>
