@@ -104,14 +104,10 @@ export default {
     onMounted(async () => {
       await loader.load();
       map.value = new google.maps.Map(mapContainer.value, { center: { lat: 52.0693, lng: 19.4803 }, zoom: 7 });
-      geocoder = new google.maps.Geocoder();
-
-      fetch("wojewodztwa.json").then((jsonFile) => {
-        jsonFile.json().then((geojsonObjects) => {
-          map.value.data.addGeoJson(geojsonObjects);
-          clearWojewodztwa();
-        });
+      map.value.data.loadGeoJson("wojewodztwa.json", null, () => {
+        clearWojewodztwa();
       });
+      geocoder = new google.maps.Geocoder();
       JSON.parse(localStorage.getItem("places") ?? "[]").forEach((place) => {
         places.value.push(place);
       })
