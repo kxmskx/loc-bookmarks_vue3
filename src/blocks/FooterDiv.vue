@@ -1,38 +1,28 @@
-<script>
-import Button from "primevue/button";
-export default {
-  name: "FooterDiv",
-  components: {
-    Button,
-  },
-};
-</script>
-
 <template>
   <footer class="footer">
     <div class="container">
       <div class="footer__nav">
         <address class="footer__style">
-          <a class="footer__logo" href="WebStudio"
-            ><span class="footer--color-logo">Your</span>Places</a
-          >
+          <a class="footer__logo" href="*">
+            <span class="footer--color-logo">Your</span>Places
+          </a>
           <ul class="footer__list">
             <li class="footer--padding">
-              <a class="footer__contact" href="*"
-                ><span class="footer--color-city">
-                  05-500 Piaseczno, ul. Janusza Kusocińskiego 12</span
-                >
+              <a class="footer__contact" href="*">
+                <span class="footer--color-city">
+                  05-500 Piaseczno, ul. Janusza Kusocińskiego 12
+                </span>
               </a>
             </li>
             <li class="footer--padding">
-              <a class="footer__contact" href="mailto:info@example.com"
-                >info@example.com</a
-              >
+              <a class="footer__contact" href="mailto:info@example.com">
+                kontaktkomsko@gmail.com
+              </a>
             </li>
             <li class="footer--padding">
-              <a class="footer__contact" href="tel:+48111111111"
-                >+48 111 111 111</a
-              >
+              <a class="footer__contact" href="tel:+48111111111">
+                +48 728 880 699
+              </a>
             </li>
           </ul>
         </address>
@@ -74,25 +64,83 @@ export default {
 
       <div class="section-newsletter">
         <h3 class="section-newsletter__sing-up">Zapisz się do newslettera</h3>
-        <form class="section-newsletter__style">
+        <form
+          class="section-newsletter__style"
+          @submit.prevent="handleSubscribe"
+        >
           <label>
             <input
+              ref="newsletterInput"
               class="section-newsletter__box section-newsletter--text-visible"
               type="email"
-              name="email"
               placeholder="E-mail"
+              v-model="email"
             />
           </label>
           <Button
             class="section-newsletter__button"
             label="Zapisz się"
             icon="pi pi-send"
+            severity="success"
+            type="submit"
           />
+          <Toast ref="toast" position="bottom-right" class="custom-toast" />
         </form>
       </div>
     </div>
   </footer>
 </template>
+
+<script>
+import { ref } from "vue";
+import { useToast } from "primevue/usetoast";
+import Toast from "primevue/toast";
+import Button from "primevue/button";
+
+export default {
+  name: "FooterDiv",
+  components: {
+    Toast,
+    Button,
+  },
+  setup() {
+    const toast = useToast();
+    const email = ref(""); // Bound input value to a ref
+
+    const handleSubscribe = () => {
+      if (!email.value) {
+        toast.add({
+          severity: "error",
+          summary: "Błąd",
+          detail: "Wpisz poprawny adres e-mail.",
+          life: 3000,
+          styleClass: "toast-error",
+        });
+        return;
+      }
+
+      // Send newsletter subscription request to the server
+      // ...
+
+      toast.add({
+        severity: "success",
+        summary: "Dzięki!",
+        detail: "Udało Ci się zapisać do naszego newslettera.",
+        life: 3000,
+        styleClass: "toast-success",
+      });
+
+      email.value = ""; // Clear input after successful submission
+    };
+
+    return {
+      toast,
+      email,
+      handleSubscribe,
+    };
+  },
+};
+</script>
 
 <style>
 .footer {
@@ -119,7 +167,7 @@ export default {
   line-height: 1.19;
 }
 .footer--color-logo {
-  color: rgb(106, 208, 157);
+  color: rgb(52, 211, 153);
 }
 .footer__list {
   justify-content: center;
@@ -142,7 +190,7 @@ export default {
 }
 .footer .footer__contact:hover,
 .footer .footer__contact:focus {
-  color: rgb(106, 208, 157);
+  color: rgb(52, 211, 153);
 }
 .footer--color-city {
   color: #ffffff;
@@ -198,7 +246,7 @@ export default {
   transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .icon-footer__come-link:hover {
-  background-color: rgb(106, 208, 157);
+  background-color: rgb(52, 211, 153);
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .icon-footer__come-icon {
@@ -249,7 +297,7 @@ export default {
   margin-right: auto;
   width: 200px;
   height: 50px;
-  background: rgb(106, 208, 157);
+  background: rgb(52, 211, 153) !important; /* znaleźć czemu tak sie dzieje */
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   border-color: transparent;
@@ -303,7 +351,7 @@ export default {
 @media screen and (min-width: 1200px) {
   .section-newsletter {
     padding-left: 78px;
-    padding-top: 32px;
+    padding-top: 26px;
     float: left;
   }
   .section-newsletter__box {
@@ -317,5 +365,10 @@ export default {
   .section-newsletter__sing-up {
     margin: 0;
   }
+}
+
+.p-toast {
+  bottom: -5px !important;
+  right: 10px !important;
 }
 </style>

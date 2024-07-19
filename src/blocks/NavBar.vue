@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "NavBar"
+  name: "NavBar",
 };
 </script>
 
@@ -62,7 +62,7 @@ export default {
 
 <style scoped>
 .main__logo-color {
-  color: rgb(106, 208, 157);
+  color: rgb(52, 211, 153);
 }
 .pi {
   cursor: pointer;

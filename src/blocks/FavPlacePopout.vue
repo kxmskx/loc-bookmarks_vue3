@@ -70,6 +70,7 @@ export default {
 }
 .button {
   margin-top: 5px;
+  background-color: rgb(52, 211, 153);
 }
 .input__header {
   font-size: 15px;
