@@ -98,7 +98,7 @@ import Toast from "primevue/toast";
 import Button from "primevue/button";
 
 export default {
-  name: "FooterDiv",
+  name: "FooterContainer",
   components: {
     Toast,
     Button,

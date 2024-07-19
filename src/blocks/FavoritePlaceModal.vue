@@ -5,7 +5,7 @@ import Button from "primevue/button";
 import "primeicons/primeicons.css";
 
 export default {
-  name: "FavPlacePopout",
+  name: "FavoritePlaceModal",
   components: {
     InputText,
     Button,
