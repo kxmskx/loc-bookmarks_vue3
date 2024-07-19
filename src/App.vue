@@ -252,11 +252,20 @@ export default {
       places.value.push({ id: places.value.length + 1, ...place });
       showModal.value = false;
       localStorage.setItem("places", JSON.stringify(places.value));
+      moveMapToPlace({ lat: place.lat, lng: place.lng });
+    };
+
+    const moveMapToPlace = ({ lat, lng }) => {
+      if (map.value) {
+        map.value.setCenter(new google.maps.LatLng(lat, lng));
+        map.value.setZoom(14);
+      }
     };
 
     const choosePlace = (latlng) => {
       otherPos.value = latlng;
       checkWojewodztwa(new google.maps.LatLng(latlng.lat, latlng.lng));
+      moveMapToPlace(latlng);
     };
 
     const removePlace = (placeId) => {
