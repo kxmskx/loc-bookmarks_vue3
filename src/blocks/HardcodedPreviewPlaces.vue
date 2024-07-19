@@ -14,24 +14,25 @@ export default {
         lat: 52.247,
         lng: 21.014,
         picture: zamczyskoImg,
+        alt: "Zamek królewski",
       },
       {
         name: "Molo w Sopocie, Gate 1",
-        address: "Plac Zamkowy 4, Warszawa",
+        address: "Plac Zdrojowy 2",
         lat: 54.446,
         lng: 18.569,
         picture: moloImg,
       },
       {
         name: "Miś na Krupówkach w Zakopanem",
-        address: "Plac Zamkowy 4, Warszawa",
+        address: "Krupówki, Zakopanem",
         lat: 49.293,
         lng: 19.951,
         picture: misImg,
       },
       {
         name: "Góra Killimanjaro w Tanzanii",
-        address: "Plac Zamkowy 4, Warszawa",
+        address: "Szczyt Uhuru na wulkanie Kibo",
         lat: -3.067,
         lng: 37.355,
         picture: killiImg,
@@ -51,7 +52,7 @@ export default {
       class="place-card"
       @click="$emit('place-choice', { lat: place.lat, lng: place.lng })"
     >
-      <img :src="place.picture" alt="Zdjęcie" class="place-image" />
+      <img :src="place.picture" alt="place.alt" class="place-image" />
       <div class="place-info">
         <h3>{{ place.name }}</h3>
         <p>{{ place.address }}</p>
