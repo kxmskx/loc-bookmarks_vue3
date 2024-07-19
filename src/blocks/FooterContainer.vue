@@ -105,7 +105,7 @@ export default {
   },
   setup() {
     const toast = useToast();
-    const email = ref(""); // Bound input value to a ref
+    const email = ref("");
 
     const handleSubscribe = () => {
       if (!email.value) {
@@ -119,9 +119,6 @@ export default {
         return;
       }
 
-      // Send newsletter subscription request to the server
-      // ...
-
       toast.add({
         severity: "success",
         summary: "Dzięki!",
@@ -130,7 +127,7 @@ export default {
         styleClass: "toast-success",
       });
 
-      email.value = ""; // Clear input after successful submission
+      email.value = "";
     };
 
     return {
