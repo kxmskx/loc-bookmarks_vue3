@@ -329,7 +329,7 @@ export default {
   border-radius: 4px;
   border-color: rgba(255, 255, 255, 0.3019607843);
   background-color: rgba(33, 150, 243, 0);
-  color: rgba(33, 150, 243, 0);
+  color: rgb(227, 227, 227);
   padding-left: 16px;
   margin-top: 20px;
 }
