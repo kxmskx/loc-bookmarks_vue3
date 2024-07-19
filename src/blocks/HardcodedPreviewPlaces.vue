@@ -14,7 +14,7 @@ export default {
         lat: 52.247,
         lng: 21.014,
         picture: zamczyskoImg,
-        alt: "Zamek królewski",
+        alt: "Fotografia zamku królewskiego w samo południe",
       },
       {
         name: "Molo w Sopocie, Gate 1",
@@ -22,6 +22,7 @@ export default {
         lat: 54.446,
         lng: 18.569,
         picture: moloImg,
+        alt: "Fotografia Sopockiego molo w pochmurny dzień",
       },
       {
         name: "Miś na Krupówkach w Zakopanem",
@@ -29,6 +30,7 @@ export default {
         lat: 49.293,
         lng: 19.951,
         picture: misImg,
+        alt: "Fotografia oszusta przebranego za misia",
       },
       {
         name: "Góra Killimanjaro w Tanzanii",
@@ -36,6 +38,7 @@ export default {
         lat: -3.067,
         lng: 37.355,
         picture: killiImg,
+        alt: "Fotografia ośnieżonego szczytu Kilimandżaro",
       },
     ];
     return { hardcodedPlaces };
