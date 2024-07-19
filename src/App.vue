@@ -3,11 +3,11 @@
 import { computed, ref, onMounted, onUnmounted, watch } from "vue";
 import { useGeolocation } from "./script/useGeolocation";
 import { Loader } from "@googlemaps/js-api-loader";
-import FavPlacePopout from "./blocks/FavPlacePopout.vue";
+import FavoritePlaceModal from "./blocks/FavoritePlaceModal.vue";
 import NavBar from "./blocks/NavBar.vue";
 import FavoritePlacesGrid from "./blocks/FavoritePlacesGrid.vue";
 import SideBar from "./blocks/SideBar.vue";
-import FooterDiv from "./blocks/FooterDiv.vue";
+import FooterContainer from "./blocks/FooterContainer.vue";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import InputText from "primevue/inputtext";
@@ -36,13 +36,13 @@ const styleForHiding = {
 export default {
   name: "App",
   components: {
-    FavPlacePopout,
+    FavoritePlaceModal,
     Button,
     Dialog,
     NavBar,
     FavoritePlacesGrid,
     SideBar,
-    FooterDiv,
+    FooterContainer,
     InputText,
   },
   setup() {
@@ -331,7 +331,7 @@ export default {
         </div>
 
         <Dialog header="Dodaj miejsce" v-model:visible="showModal">
-          <FavPlacePopout
+          <FavoritePlaceModal
             @add-place="addPlace"
             :lat="otherPos?.lat"
             :lng="otherPos?.lng"
@@ -363,7 +363,7 @@ export default {
       </main>
       <SideBar @place-choice="choosePlace" />
     </div>
-    <FooterDiv />
+    <FooterContainer />
   </div>
 </template>
 
