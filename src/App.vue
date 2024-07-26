@@ -46,7 +46,10 @@ export default {
     InputText,
   },
   setup() {
-    const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY });
+    const loader = new Loader({
+      apiKey: GOOGLE_MAPS_API_KEY,
+      libraries: ["places"],
+    });
     const { coords } = useGeolocation();
 
     const currPos = computed(() => ({
