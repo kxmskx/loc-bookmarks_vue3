@@ -16,7 +16,7 @@ export default {
     const map = new google.maps.Map(this.$refs.miniMap, {
       center: { lat: this.lat, lng: this.lng },
       zoom: 8,
-      disableDefaultUI: true, // Wyłączenie interakcji
+      disableDefaultUI: true,
     });
 
     new google.maps.Marker({

@@ -1,15 +1,44 @@
 <script>
+import { ref, onMounted, watch } from "vue";
+
 export default {
   name: "NavBar",
+  setup() {
+    const theme = ref("light-theme");
+
+    const toggleTheme = () => {
+      theme.value =
+        theme.value === "light-theme" ? "dark-theme" : "light-theme";
+      document.documentElement.className = theme.value;
+    };
+
+    const themeIconClass = ref("pi pi-moon");
+
+    watch(theme, (newTheme) => {
+      localStorage.setItem("theme", newTheme);
+      themeIconClass.value =
+        newTheme === "dark-theme" ? "pi pi-sun" : "pi pi-moon";
+    });
+
+    onMounted(() => {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme) {
+        theme.value = savedTheme;
+        document.documentElement.className = savedTheme;
+      }
+    });
+
+    return { theme, toggleTheme, themeIconClass };
+  },
 };
 </script>
 
 <template>
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand logo__animation" href="#"
-        ><span class="main__logo-color">Your</span>Places.io</a
-      >
+      <a class="navbar-brand logo__animation" href="#">
+        <span class="main__logo-color">Your</span>Places.io
+      </a>
       <button
         class="navbar-toggler"
         type="button"
@@ -24,9 +53,7 @@ export default {
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#"
-              >Strona Główna</a
-            >
+            <a class="nav-link" aria-current="page" href="#">Strona Główna</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Aktualności</a>
@@ -36,7 +63,7 @@ export default {
           </li>
           <li class="nav-item">
             <a
-              class="nav-link disabled"
+              class="nav-link active__page"
               href="#"
               tabindex="-1"
               aria-disabled="true"
@@ -47,14 +74,14 @@ export default {
       </div>
     </div>
     <div class="d-flex activities">
-      <!-- <OverlayBadge value="2"> -->
-      <i class="pi pi-bell" style="font-size: 1.5rem" />
-      <!-- </OverlayBadge> -->
-      <!-- <OverlayBadge value="4" severity="danger"> -->
-      <i class="pi pi-calendar" style="font-size: 1.5rem" />
-      <!-- </OverlayBadge> -->
+      <i
+        :class="themeIconClass"
+        style="font-size: 1.5rem"
+        @click="toggleTheme"
+      ></i>
+      <i class="pi pi-calendar" style="font-size: 1.5rem"></i>
       <OverlayBadge class="pi--overlay-badge" severity="danger">
-        <i class="pi pi-envelope" style="font-size: 1.5rem" />
+        <i class="pi pi-envelope" style="font-size: 1.5rem"></i>
       </OverlayBadge>
     </div>
   </nav>
@@ -78,16 +105,26 @@ export default {
 }
 .navbar {
   margin-bottom: 0px;
-  border-bottom: 1px solid #e9ecef;
-  background-color: #fff;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--side-background-color);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
 }
+.navbar-brand {
+  color: var(--text-color) !important;
+}
 .nav-item {
   margin-right: 10px;
+}
+.nav-link {
+  color: var(--text-color);
+}
+.nav-link:hover {
+  color: var(--text-hover);
 }
 .logo__animation {
   font-size: 25px;
@@ -97,6 +134,16 @@ export default {
 .logo__animation:hover {
   animation: shake 5.5s;
   animation-iteration-count: infinite;
+}
+
+.active__page {
+  color: var(--nav-active-page);
+}
+.active__page:hover {
+  color: var(--nav-active-page);
+}
+.active__page:focus {
+  color: var(--nav-active-page);
 }
 
 @keyframes shake {

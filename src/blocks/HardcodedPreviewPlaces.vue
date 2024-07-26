@@ -47,7 +47,7 @@ export default {
 </script>
 
 <template>
-  <h3 class="recomendations__header">Polecane lokalizacje</h3>
+  <h3 class="recomendations__header">Polecane zakładki</h3>
   <div class="places-grid--hardcoded">
     <div
       v-for="place in hardcodedPlaces"
@@ -77,8 +77,9 @@ export default {
 .place-card {
   min-height: 220px;
   max-width: 200px;
-  background-color: #f8f9fa;
-  border: 1px solid #ccc;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -116,5 +117,6 @@ export default {
   margin-left: 0px;
   margin-bottom: 25px;
   margin-top: 14px;
+  color: var(--text-color);
 }
 </style>

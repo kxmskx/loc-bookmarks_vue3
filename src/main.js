@@ -8,6 +8,7 @@ import AnimateOnScroll from "primevue/animateonscroll";
 import OverlayBadge from "primevue/overlaybadge";
 import ToastService from "primevue/toastservice";
 import Toast from "primevue/toast";
+import "./style/variables.css";
 
 const app = createApp(App);
 app.use(PrimeVue, {
@@ -21,6 +22,6 @@ app.config.warnHandler = function (msg, vm, trace) {
 };
 app.directive("animateonscroll", AnimateOnScroll);
 app.component("OverlayBadge", OverlayBadge);
-app.component("PrimeToast", Toast); // Zarejestrowano tutaj
+app.component("PrimeToast", Toast);
 app.use(ToastService);
 app.mount("#app");

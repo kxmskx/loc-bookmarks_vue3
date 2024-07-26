@@ -1,0 +1,53 @@
+:root {
+  --light-theme-text-color: #2f2f2f;
+  --light-theme-brand: #fefefe;
+  --light-theme-white: #fff;
+  --light-theme-blocks-background-color: #fff;
+  --light-background-color: #fbf9fe;
+  --light-text-hover-color: #000;
+  --light-border-color: #e9ecef;
+  --light-foot-newsletter-box-color: rgba(255, 255, 255, 0.3);
+
+  --dark-theme-text-color: #faf9f6;
+  --dark-theme-brand: #333;
+  --dark-theme-blocks-background-color: rgb(36, 37, 38);
+  --dark-theme-black: #fff;
+  --dark-background-color: rgb(24, 25, 26);
+  --dark-text-hover-color: #b1b1b1;
+  --dark-border-color: #343a40;
+  --dark-foot-newsletter-box-color: rgba(0, 0, 0, 0.3);
+
+  --nav-active-page: rgb(52, 211, 153);
+
+  --dark-foot-contact-color: rgba(255, 255, 255, 0.6);
+  --dark-foot-link-color: rgba(255, 255, 255, 0.1);
+  --light-foot-contact-color: rgba(0, 0, 0, 0.6);
+  --light-foot-link-color: rgba(0, 0, 0, 0.1);
+}
+
+.light-theme {
+  --background-color: var(--light-background-color);
+  --border-color: var(--light-border-color);
+  --text-color: var(--light-theme-text-color);
+  --brand-color: var(--light-theme-brand);
+
+  --side-background-color: var(--light-theme-blocks-background-color);
+  --text-hover: var(--light-text-hover-color);
+  --foot-contact: var(--light-foot-contact-color);
+  --foot-link: var(--light-foot-link-color);
+  --foot-newsletter-box: var(--dark-foot-newsletter-box-color);
+}
+
+.dark-theme {
+  background-color: #151418;
+  --background-color: var(--dark-background-color);
+  --border-color: var(--dark-border-color);
+  --text-color: var(--dark-theme-text-color);
+  --brand-color: var(--dark-theme-brand);
+
+  --side-background-color: var(--dark-theme-blocks-background-color);
+  --text-hover: var(--dark-text-hover-color);
+  --foot-contact: var(--dark-foot-contact-color);
+  --foot-link: var(--dark-foot-link-color);
+  --foot-newsletter-box: var(--light-foot-newsletter-box-color);
+}

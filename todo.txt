@@ -5,6 +5,11 @@
 ///////////
 
 func:
-0. Obrys województw... na marker i na hover
 5. Dodać funkcjonalnosć do "Wyszukaj na mapie"
 9. 
+
+
+info o markerze onclick
+
+podział na powiaty np. przy zoomie
+----------------------------------------------------------------

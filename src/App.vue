@@ -15,19 +15,19 @@ import InputText from "primevue/inputtext";
 const GOOGLE_MAPS_API_KEY = "AIzaSyBWFrtGpCOH1FuMS4TtzhOdLAqQWiOFR5Q";
 const styleForSelection = {
   visible: true,
+  strokeColor: "#FF0000",
+  strokeOpacity: 0.8,
+  strokeWeight: 2,
+  fillColor: "#FF0000",
+  fillOpacity: 0.03,
+};
+const styleForHighlight = {
+  visible: true,
   strokeColor: "#0000FF",
   strokeOpacity: 0.8,
   strokeWeight: 2,
   fillColor: "#0000FF",
-  fillOpacity: 0.15,
-};
-const styleForHighlight = {
-  visible: true,
-  strokeColor: "#FF00FF",
-  strokeOpacity: 0.8,
-  strokeWeight: 2,
-  fillColor: "#FF00FF",
-  fillOpacity: 0.15,
+  fillOpacity: 0.03,
 };
 const styleForHiding = {
   visible: false,
@@ -299,12 +299,12 @@ export default {
     <div class="content">
       <main class="main">
         <div class="d-flex text-center" style="height: 20vh">
-          <div class="m-auto">
+          <div class="m-auto header__text__field">
             <h4>Twoja pozycja</h4>
             Współrzędne geograficzne: <br />
             {{ currPos.lat.toFixed(5) }}, {{ currPos.lng.toFixed(5) }}.
           </div>
-          <div class="m-auto">
+          <div class="m-auto header__text__field">
             <h4>Wybrana pozycja</h4>
             <span v-if="otherPos">
               Współrzędne geograficzne: <br />
@@ -378,7 +378,11 @@ export default {
 
 <style scoped>
 .wrapper {
-  background-color: #fbf9fe;
+  background-color: var(--background-color);
+}
+
+.header__text__field {
+  color: var(--text-color);
 }
 .place {
   margin: 10px 0;
@@ -393,19 +397,19 @@ export default {
 .button {
   margin-left: 10px;
   margin-right: 10px;
-  color: #4f4f4f;
-  background-color: #fefefe;
-  border-color: #4f4f4f;
+  color: var(--text-color);
+  background-color: var(--brand-color);
+  border-color: var(--text-color);
   min-width: 262px;
 }
 .button.search__button:hover {
-  background-color: #fefefe;
+  background-color: var(--brand-color);
   border-color: rgb(106, 208, 157);
   color: rgb(106, 208, 157);
 }
 .button.use__button:hover {
   color: rgb(106, 208, 157);
-  background-color: #fefefe;
+  background-color: var(--brand-color);
   border-color: rgb(106, 208, 157);
 }
 @media screen and (max-width: 991px) {

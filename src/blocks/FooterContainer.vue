@@ -144,11 +144,11 @@ export default {
   min-width: 320px;
   text-align: center;
   position: absolute;
-  border-top: 1px solid rgba(43, 43, 48);
+  border-top: 1px solid var(--border-color);
   width: 100%;
   padding-bottom: 30px;
   left: 0px;
-  background: rgb(24, 24, 27);
+  background: var(--side-background-color);
   border-radius: 14px 14px 0px 0px;
 }
 .footer__style {
@@ -160,7 +160,7 @@ export default {
   font-weight: 700;
   font-size: 26px;
   text-decoration: none;
-  color: #ffffff;
+  color: var(--text-color);
   line-height: 1.19;
 }
 .footer--color-logo {
@@ -179,7 +179,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--foot-contact);
   transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .footer--padding {
@@ -190,7 +190,7 @@ export default {
   color: rgb(52, 211, 153);
 }
 .footer--color-city {
-  color: #ffffff;
+  color: var(--text-color);
 }
 
 @media screen and (min-width: 768px) {
@@ -216,7 +216,7 @@ export default {
   font-size: 14px;
   line-height: 16px;
   letter-spacing: 0.03em;
-  color: #ffffff;
+  color: var(--text-color);
   margin-top: 0px;
   padding-top: 52px;
   margin-bottom: 20px;
@@ -238,7 +238,7 @@ export default {
   align-items: center;
   width: 44px;
   height: 44px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--foot-link);
   border-radius: 50%;
   transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -249,7 +249,7 @@ export default {
 .icon-footer__come-icon {
   width: 20px;
   height: 20px;
-  fill: #ffffff;
+  fill: var(--text-color);
 }
 
 @media screen and (min-width: 768px) {
@@ -275,7 +275,7 @@ export default {
   padding-top: 32px;
 }
 .section-newsletter__sing-up {
-  color: #ffffff;
+  color: var(--text-color);
   font-style: normal;
   font-weight: 700;
   font-size: 14px;
@@ -321,12 +321,12 @@ export default {
   max-width: 450px;
   width: 100%;
   height: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--foot-newsletter-box);
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.15));
   border-radius: 4px;
-  border-color: rgba(255, 255, 255, 0.3019607843);
+  /* border-color: rgba(255, 255, 255, 0.3019607843); */
   background-color: rgba(33, 150, 243, 0);
-  color: rgb(227, 227, 227);
+  color: var(--text-color);
   padding-left: 16px;
   margin-top: 20px;
 }

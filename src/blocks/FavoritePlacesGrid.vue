@@ -54,8 +54,8 @@ export default {
 .fav__wrapper {
   width: auto;
   height: auto;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: var(--side-background-color);
+  border: 1px solid var(--border-color);
   margin: 14px;
   margin-bottom: 154px;
   padding: 10px 0px;
@@ -65,6 +65,7 @@ export default {
   text-align: center;
   margin-bottom: 20px;
   margin-top: 15px;
+  color: var(--text-color);
 }
 .places-grid {
   display: grid;
@@ -74,8 +75,8 @@ export default {
 }
 
 .place-card {
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -99,18 +100,22 @@ export default {
 
 .place-info h3 {
   font-size: 20px;
+  color: var(--text-color);
 }
 
 .place-info p {
   font-size: 10px;
+  color: var(--text-color);
 }
 
 .place-info h3 {
   margin: 0 0 10px;
+  color: var(--text-color);
 }
 
 .place-info p {
   margin: 5px 0;
+  color: var(--text-color);
 }
 
 .recomendations__header {
@@ -130,6 +135,6 @@ export default {
   transition: color 0.3s;
 }
 .delete-button:hover {
-  color: #000;
+  color: #ff6161b9;
 }
 </style>

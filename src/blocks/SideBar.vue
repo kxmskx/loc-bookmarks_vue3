@@ -2,15 +2,15 @@
 import HardcodedPreviewPlaces from "./HardcodedPreviewPlaces.vue";
 export default {
   name: "SideBar",
-  emits: ['place-choice'],
+  emits: ["place-choice"],
   components: {
-    HardcodedPreviewPlaces
+    HardcodedPreviewPlaces,
   },
   methods: {
     choosePlace(place) {
-      this.$emit('place-choice', place)
-    }
-  }
+      this.$emit("place-choice", place);
+    },
+  },
 };
 </script>
 
@@ -27,8 +27,8 @@ export default {
   width: 230px;
   align-items: center;
   padding: 15px;
-  background-color: #ffffff;
-  border-left: 1px solid #e9ecef;
+  background-color: var(--side-background-color);
+  border-left: 1px solid var(--border-color);
   min-height: 100vh;
   overflow-y: auto;
 }
