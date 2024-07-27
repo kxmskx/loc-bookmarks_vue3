@@ -67,11 +67,11 @@ export default {
 
 <style scoped>
 .places-grid--hardcoded {
-  margin-top: 70px;
+  /* margin-top: 70px; */
   display: flex;
   flex-direction: column;
   height: 100vh;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 .place-card {
