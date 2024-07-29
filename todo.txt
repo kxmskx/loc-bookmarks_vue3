@@ -5,11 +5,10 @@
 ///////////
 
 func:
-5. Dodać funkcjonalnosć do "Wyszukaj na mapie"
-9. 
+9. Dodać funkcjonalnosć do "Wyszukaj na mapie" - (Google Places API)
 
 
-info o markerze onclick
+15.info o markerze onclick - działa ale nie w pollygonie (z-index)
 
-podział na powiaty np. przy zoomie
+17.podział na powiaty np. przy zoomie - (tu raczej autorska metoda niz coś wbudowanego)
 ----------------------------------------------------------------
