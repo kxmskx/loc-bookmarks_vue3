@@ -21,7 +21,7 @@
             </li>
             <li class="footer--padding">
               <a class="footer__contact" href="tel:+48111111111">
-                +48 728 880 699
+                +48 111 111 111
               </a>
             </li>
           </ul>
